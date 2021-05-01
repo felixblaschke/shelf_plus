@@ -13,5 +13,13 @@ ResponseHandler get jsonHandler => (Request request, dynamic data) {
           headers: {HttpHeaders.contentTypeHeader: ContentType.json.mimeType},
         );
       }
+
+      if (data is Iterable<dynamic>) {
+        return data.toList(growable: false);
+      }
       return null;
     };
+
+// TODO serialize Iterable<Person>
+// TODO serialize List<Person>
+// TODO maybe combine with toJson handler

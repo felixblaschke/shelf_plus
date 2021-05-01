@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:shelf_plus/shelf_plus.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_plus/shelf_plus.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:test/test.dart';
 
@@ -64,6 +64,8 @@ void main() {
 
     app.get('/object', () => {'name': 'john', 'age': 42});
     app.get('/list', (Request request) => [1, 2, 3]);
+    app.get(
+        '/iterable', (Request request) => [1, 2, 3, 4, 5].where((n) => n > 2));
 
     server = await runTestServer(app);
 
@@ -74,6 +76,10 @@ void main() {
     var r2 = await server.fetch('get', '/list');
     expect(r2.headers['content-type']?.first, 'application/json');
     expect(r2.data, [1, 2, 3]);
+
+    var r3 = await server.fetch('get', '/iterable');
+    expect(r3.headers['content-type']?.first, 'application/json');
+    expect(r3.data, [3, 4, 5]);
   });
 
   test('register response handler', () async {
@@ -175,8 +181,7 @@ void main() {
     app.get('/html1', () => '<h1>Headline</h1>',
         use: setContentType('text/html'));
 
-    app.get('/html2', () => '<h1>Headline</h1>',
-        use: typeByExtension('html'));
+    app.get('/html2', () => '<h1>Headline</h1>', use: typeByExtension('html'));
 
     server = await runTestServer(app);
 
@@ -213,7 +218,6 @@ void main() {
     expect(r.data, 'Hi john, I like sports');
   });
 
-
   test('router mount', () async {
     var app = Router().plus;
     var subapp = Router().plus;
@@ -236,13 +240,14 @@ void main() {
     server = await runTestServer(app);
 
     var r1 = await server.fetch('get', '/bird1');
-    expect(r1.headers[HttpHeaders.contentTypeHeader]?.first, 'application/octet-stream');
+    expect(r1.headers[HttpHeaders.contentTypeHeader]?.first,
+        'application/octet-stream');
     expect(r1.data.length, 14897);
 
     var r2 = await server.fetch('get', '/bird2');
-    expect(r2.headers[HttpHeaders.contentTypeHeader]?.first, 'application/octet-stream');
+    expect(r2.headers[HttpHeaders.contentTypeHeader]?.first,
+        'application/octet-stream');
     expect(r2.data.length, 14897);
-
   });
 }
 
