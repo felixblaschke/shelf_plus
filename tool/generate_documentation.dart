@@ -10,6 +10,7 @@ void process(File file, File to) {
 
   lines = gapMacro(file, lines);
   lines = codeMacro(file, lines);
+  lines = indexMacro(file, lines);
 
   to.writeAsStringSync(lines.join('\n'));
 }
@@ -35,6 +36,38 @@ List<String> gapMacro(File docFile, List<String> lines) {
   return result;
 }
 
+List<String> indexMacro(File docFile, List<String> lines) {
+  final result = <String>[];
+
+  for (var line in lines) {
+    if (line.trim().startsWith('@index')) {
+      result.add('## Table of contents');
+      
+      lines
+          .map((line) => line.trim())
+          .where((line) => line.startsWith('##'))
+          .forEach((line) {
+        var depth = line.indexOf(' ');
+        var title = line.substring(depth + 1);
+        var link = '#' + title.toLowerCase().replaceAll(' ', '-');
+
+        print('$depth $title');
+
+        if (depth == 2) {
+          result.add('');
+          result.add('[**$title**]($link)');
+        } else if (depth == 3) {
+          result.add('  - [$title]($link)');
+        }
+      });
+    } else {
+      result.add(line);
+    }
+  }
+
+  return result;
+}
+
 List<String> codeMacro(File docFile, List<String> lines) {
   final result = <String>[];
 
@@ -43,7 +76,7 @@ List<String> codeMacro(File docFile, List<String> lines) {
       var path = line.substring(line.indexOf('@code') + '@code'.length).trim();
       var file = File(path);
       var extension =
-          file.path.substring(file.path.lastIndexOf('.') + '.'.length);
+      file.path.substring(file.path.lastIndexOf('.') + '.'.length);
       var code = file.readAsStringSync().trim().split('\n');
 
       code =

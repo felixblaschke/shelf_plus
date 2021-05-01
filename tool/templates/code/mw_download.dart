@@ -13,7 +13,7 @@ Handler init() {
 
   app.get('/invoice/<id>', (Request request, String id) {
     File document = pdfService.generateInvoice(id);
-    return download(filename: 'invoid_$id') >> document;
+    return download(filename: 'invoice_$id.pdf') >> document;
   });
   //@end
   return app;
