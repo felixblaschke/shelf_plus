@@ -1,6 +1,7 @@
 import 'package:shelf_plus/shelf_plus.dart';
+import 'env_example.dart';
 
-void main() => shelfRun(init);
+void main() => shelfRun(init, envExample);
 
 late Middleware middlewareA;
 late Middleware middlewareB;

@@ -1,8 +1,12 @@
 import 'dart:io';
-
 import 'package:shelf_plus/shelf_plus.dart';
 
-void main() => shelfRun(init);
+final envExample = {
+  'SHELF_HOTRELOAD': 'true',
+  'SHELF_PORT': '9090',
+  'SHELF_ADDRESS': 'localhost',
+};
+void main() => shelfRun(init, envExample);
 
 Handler init() {
   var app = Router().plus;

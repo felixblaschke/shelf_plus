@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:shelf_plus/shelf_plus.dart';
-
+import 'env_example.dart';
 import 'other_code.dart';
 
-void main() => shelfRun(init);
+void main() => shelfRun(init, envExample);
 
 late dynamic middleware;
 

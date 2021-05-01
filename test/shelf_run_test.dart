@@ -7,7 +7,13 @@ void main() {
   test('shelf run', () async {
     var init = () => (Request request) => Response.ok('ok');
 
-    var ctx = await shelfRun(init);
+    var env = {
+      'SHELF_HOTRELOAD': 'true',
+      'SHELF_PORT': '8081',
+      'SHELF_ADDRESS': '127.0.0.1',
+    };
+
+    var ctx = await shelfRun(init, env);
 
     var response = await dio.Dio().get('http://localhost:8080/');
     expect(response.data!, 'ok');

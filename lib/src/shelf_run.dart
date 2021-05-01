@@ -15,23 +15,23 @@ import 'package:supercharged_dart/supercharged_dart.dart';
 /// - SHELF_ADDRESS: address to bind to (default 'localhost')
 /// - SHELF_HOTRELOAD: enable (true) or disable (false) hot reload (default true)
 Future<ShelfRunContext> shelfRun(
-    FutureOr<shelf.Handler> Function() init) async {
+    FutureOr<shelf.Handler> Function() init, Map<String, String> env) async {
   var context = ShelfRunContext();
 
-  var useHotReload = true;
-
-  if (_env('SHELF_HOTRELOAD')?.toLowerCase() == 'false') {
-    useHotReload = false;
-  }
+  var useHotReload = env.containsKey('SHELF_HOTRELOAD')
+      ? (env['SHELF_HOTRELOAD'] == 'true')
+      : (_env('SHELF_HOTRELOAD') != null
+          ? (_env('SHELF_HOTRELOAD') == 'true')
+          : true);
 
   if (useHotReload) {
     withHotreload(() async {
-      final server = await _createServer(init);
+      final server = await _createServer(init, env);
       context._server = server;
       return server;
     });
   } else {
-    await _createServer(init);
+    await _createServer(init, env);
   }
 
   return context;
@@ -39,9 +39,14 @@ Future<ShelfRunContext> shelfRun(
 
 /// Creates a default IO server
 Future<HttpServer> _createServer(
-    FutureOr<shelf.Handler> Function() init) async {
-  var port = _env('SHELF_PORT')?.toInt() ?? 8080;
-  var address = _env('SHELF_ADDRESS') ?? 'localhost';
+    FutureOr<shelf.Handler> Function() init, Map<String, String> env) async {
+  var port = (env.containsKey('SHELF_PORT'))
+      ? (env['SHELF_PORT']?.toInt() ?? 8080)
+      : (_env('SHELF_PORT')?.toInt() ?? 8080);
+
+  var address = env.containsKey('SHELF_ADDRESS')
+      ? env['SHELF_ADDRESS'] ?? 'localhost'
+      : (_env('SHELF_ADDRESS') ?? 'localhost');
 
   var handler = await init();
   final server = await io.serve(handler, address, port);
@@ -51,8 +56,8 @@ Future<HttpServer> _createServer(
 
 /// Helper for looking up environment variable
 String? _env(String key) =>
-    Platform.environment[key.toUpperCase()] ??
-    Platform.environment[key.toLowerCase()];
+    Platform.environment[key.toUpperCase()]?.toLowerCase() ??
+    Platform.environment[key.toLowerCase()]?.toLowerCase();
 
 class ShelfRunContext {
   HttpServer? _server;
