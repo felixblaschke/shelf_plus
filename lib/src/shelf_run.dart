@@ -14,11 +14,18 @@ import 'package:supercharged_dart/supercharged_dart.dart';
 /// - SHELF_PORT: port to run (default 8080)
 /// - SHELF_ADDRESS: address to bind to (default 'localhost')
 /// - SHELF_HOTRELOAD: enable (true) or disable (false) hot reload (default true)
+///
+/// The default values can be overridden by setting [defaultBindPort],
+/// [defaultBindAddress] or [defaultEnableHotReload].
 Future<ShelfRunContext> shelfRun(
-    FutureOr<shelf.Handler> Function() init) async {
+  FutureOr<shelf.Handler> Function() init, {
+  int defaultBindPort = 8080,
+  String defaultBindAddress = 'localhost',
+  bool defaultEnableHotReload = true,
+}) async {
   var context = ShelfRunContext();
 
-  var useHotReload = true;
+  var useHotReload = defaultEnableHotReload;
 
   if (_env('SHELF_HOTRELOAD')?.toLowerCase() == 'false') {
     useHotReload = false;
@@ -26,12 +33,16 @@ Future<ShelfRunContext> shelfRun(
 
   if (useHotReload) {
     withHotreload(() async {
-      final server = await _createServer(init);
+      final server = await _createServer(init,
+          defaultBindPort: defaultBindPort,
+          defaultBindAddress: defaultBindAddress);
       context._server = server;
       return server;
     });
   } else {
-    await _createServer(init);
+    await _createServer(init,
+        defaultBindPort: defaultBindPort,
+        defaultBindAddress: defaultBindAddress);
   }
 
   return context;
@@ -39,9 +50,12 @@ Future<ShelfRunContext> shelfRun(
 
 /// Creates a default IO server
 Future<HttpServer> _createServer(
-    FutureOr<shelf.Handler> Function() init) async {
-  var port = _env('SHELF_PORT')?.toInt() ?? 8080;
-  var address = _env('SHELF_ADDRESS') ?? 'localhost';
+  FutureOr<shelf.Handler> Function() init, {
+  required int defaultBindPort,
+  required String defaultBindAddress,
+}) async {
+  var port = _env('SHELF_PORT')?.toInt() ?? defaultBindPort;
+  var address = _env('SHELF_ADDRESS') ?? defaultBindAddress;
 
   var handler = await init();
   final server = await io.serve(handler, address, port);

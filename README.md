@@ -422,3 +422,9 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 | SHELF_PORT           | 8080          | Port to bind the shelf application to    |
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
 | SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
+
+You override the default values with optional parameters in the `shelfRun()` function.
+
+```dart
+void main() => shelfRun(init, defaultBindPort: 3000);
+```
