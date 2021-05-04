@@ -7,7 +7,6 @@ import 'file_handler.dart';
 import 'json_handler.dart';
 import 'shelf_handler_handler.dart';
 import 'string_handler.dart';
-import 'to_json_handler.dart';
 
 /// Model for converting an object into another one.
 ///
@@ -46,7 +45,6 @@ var _defaultHandlers = <ResponseHandler>[
   binaryHandler,
   jsonHandler,
   shelfHandlerHandler,
-  toJsonHandler,
   fileHandler,
 ];
 

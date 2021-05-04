@@ -60,12 +60,18 @@ void main() {
   });
 
   test('json handler', () async {
+    var persons = [
+      Person(firstName: 'John', lastName: 'Doe'),
+      Person(firstName: 'Jane', lastName: 'Doe')
+    ];
+
     var app = Router().plus;
 
     app.get('/object', () => {'name': 'john', 'age': 42});
-    app.get('/list', (Request request) => [1, 2, 3]);
-    app.get(
-        '/iterable', (Request request) => [1, 2, 3, 4, 5].where((n) => n > 2));
+    app.get('/list', () => [1, 2, 3]);
+    app.get('/iterable', () => [1, 2, 3, 4, 5].where((n) => n > 2));
+    app.get('/persons', () => persons);
+    app.get('/persons/john', () => persons.where((p) => p.firstName == 'John'));
 
     server = await runTestServer(app);
 
@@ -80,6 +86,16 @@ void main() {
     var r3 = await server.fetch('get', '/iterable');
     expect(r3.headers['content-type']?.first, 'application/json');
     expect(r3.data, [3, 4, 5]);
+
+    var r4 = await server.fetch('get', '/persons');
+    expect(r4.headers['content-type']?.first, 'application/json');
+    expect(r4.data[0]['firstName'], 'John');
+    expect(r4.data[1]['firstName'], 'Jane');
+
+    var r5 = await server.fetch('get', '/persons/john');
+    expect(r5.headers['content-type']?.first, 'application/json');
+    expect(r5.data[0]['firstName'], 'John');
+    expect(r5.data[0]['lastName'], 'Doe');
   });
 
   test('register response handler', () async {

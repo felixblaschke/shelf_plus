@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shelf Plus</title>
+</head>
+<body style="font-family: monospace">
+
+<h1>Persons demo</h1>
+
+<div id="log"></div>
+<p>
+    <button onclick="add()">Add</button>
+    <button onclick="update()">Update</button>
+    <button onclick="remove()">Remove</button>
+</p>
+
+<script>
+    const log = (msg) => document.querySelector('#log').innerText += `\n${msg}`;
+
+    const loadPersons = async () => {
+        log('\nLoaded persons:')
+        const persons = await (await fetch('/person')).json();
+        persons.forEach(it => log(`- ${it.firstName} ${it.lastName} (${it.age}), id: ${it.id}`));
+    }
+
+    const add = async () => {
+        const data = {
+            firstName: prompt('First name', ''),
+            lastName: prompt('Last name', ''),
+            age: parseInt(prompt('Age', '')),
+        }
+        const response = await (await fetch('/person', {
+            method: 'post',
+            headers: {'content-type': 'application/json'},
+            body: JSON.stringify(data)
+        })).json();
+
+        log(`\nAdded person: ${JSON.stringify(response.person)}`);
+
+        await loadPersons();
+    }
+
+    const remove = async () => {
+        const idPart = prompt('Part of id to remove', '');
+        const persons = await (await fetch('/person')).json();
+        for (let person of persons) {
+            if (person.id.includes(idPart)) {
+                log(`\nDelete ${JSON.stringify(person)}`);
+                await fetch(`/person/${person.id}`, {method: 'delete'})
+            }
+        }
+        await loadPersons();
+    }
+
+
+    const update = async () => {
+        const idPart = prompt('Part of id to update', '');
+        const persons = await (await fetch('/person')).json();
+        let personToUpdate;
+        for (let person of persons) {
+            if (person.id.includes(idPart)) {
+                personToUpdate = person
+            }
+        }
+        if (personToUpdate) {
+            const data = {
+                firstName: prompt('First name', personToUpdate.firstName),
+                lastName: prompt('Last name', personToUpdate.lastName),
+                age: parseInt(prompt('Age', personToUpdate.age)),
+            }
+            await (await fetch(`/person/${personToUpdate.id}`, {
+                method: 'put',
+                headers: {'content-type': 'application/json'},
+                body: JSON.stringify(data)
+            })).json();
+            log(`\nUpdating person with id ${personToUpdate.id}`)
+            await loadPersons();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadPersons);
+
+</script>
+
+</body>
+</html>
