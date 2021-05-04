@@ -15,6 +15,10 @@ Handler init() {
 
   app.get('/class', () => Person('Theo'));
 
+  app.get('/list-of-classes', () => [Person('Theo'), Person('Bob')]);
+
+  app.get('/iterables', () => [1, 10, 100].where((n) => n > 9));
+
   app.get('/handler', () => typeByExtension('html') >> '<h1>Hello</h1>');
 
   app.get('/file', () => File('thesis.pdf'));

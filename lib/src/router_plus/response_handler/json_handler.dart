@@ -13,15 +13,19 @@ ResponseHandler get jsonHandler => (Request request, dynamic data) {
         return invokeResult;
       }
 
+      /// Serialize maps
       if (data is Map<String, dynamic>) {
         return _serializedJsonResponse(data);
       }
 
+      /// Serialize lists
       if (data is List<dynamic>) {
+        /// Try to invoke '.toJson()' on every item
         final invokeList = data
             .map((item) => _invokeToJsonMethod(item))
             .toList(growable: false);
 
+        /// Everytime item successfully transformed via '.toJson'?
         var everyItemIsToJsonInvokable =
             invokeList.every((item) => item != null);
 
@@ -32,6 +36,7 @@ ResponseHandler get jsonHandler => (Request request, dynamic data) {
         }
       }
 
+      /// Handle Iterable by turning them into lists (process with next iteration)
       if (data is Iterable<dynamic>) {
         return data.toList(growable: false);
       }

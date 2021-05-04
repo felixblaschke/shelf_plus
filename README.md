@@ -179,6 +179,10 @@ Handler init() {
 
   app.get('/class', () => Person('Theo'));
 
+  app.get('/list-of-classes', () => [Person('Theo'), Person('Bob')]);
+
+  app.get('/iterables', () => [1, 10, 100].where((n) => n > 9));
+
   app.get('/handler', () => typeByExtension('html') >> '<h1>Hello</h1>');
 
   app.get('/file', () => File('thesis.pdf'));
@@ -423,7 +427,7 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
 | SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
 
-You override the default values with optional parameters in the `shelfRun()` function.
+You can override the default values with optional parameters in the `shelfRun()` function.
 
 ```dart
 void main() => shelfRun(init, defaultBindPort: 3000);
