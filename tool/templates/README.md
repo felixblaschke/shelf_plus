@@ -194,3 +194,19 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 You can override the default values with optional parameters in the `shelfRun()` function.
 
 @code tool/templates/code/shelf_run_override_default.dart
+
+
+@gap2
+## Examples
+
+### Rest Service
+
+Implementation of a CRUD, rest-like backend service. ([Full sources](/example/example_rest/))
+
+
+
+**example_rest.dart**
+@code example/example_rest/bin/example_rest.dart
+
+**person.dart**
+@code example/example_rest/bin/person.dart
