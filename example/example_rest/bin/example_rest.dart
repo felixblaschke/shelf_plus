@@ -15,7 +15,7 @@ Handler init() {
   var app = Router().plus;
 
   /// Serve index page of frontend
-  app.get('/', () => File('src/page.html'));
+  app.get('/', () => File('frontend/page.html'));
 
   /// List all persons
   app.get('/person', () => data);
