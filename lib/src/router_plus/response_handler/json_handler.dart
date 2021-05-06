@@ -20,20 +20,7 @@ ResponseHandler get jsonHandler => (Request request, dynamic data) {
 
       /// Serialize lists
       if (data is List<dynamic>) {
-        /// Try to invoke '.toJson()' on every item
-        final invokeList = data
-            .map((item) => _invokeToJsonMethod(item))
-            .toList(growable: false);
-
-        /// Everytime item successfully transformed via '.toJson'?
-        var everyItemIsToJsonInvokable =
-            invokeList.every((item) => item != null);
-
-        if (everyItemIsToJsonInvokable) {
-          return invokeList;
-        } else {
-          return _serializedJsonResponse(data);
-        }
+        return _handleListResponse(data);
       }
 
       /// Handle Iterable by turning them into lists (process with next iteration)
@@ -61,6 +48,29 @@ Object? _invokeToJsonMethod(dynamic object) {
     }
   }
   return null;
+}
+
+Object? _handleListResponse(List<dynamic> data) {
+  final invokeList = List<Object?>.filled(data.length, null, growable: false);
+
+  /// Try to invoke '.toJson()' on every item
+  var everyItemIsToJsonInvokable = true;
+
+  for (var i = 0; i < data.length; i++) {
+    final item = data[i];
+    final json = _invokeToJsonMethod(item);
+    if (json == null) {
+      everyItemIsToJsonInvokable = false;
+      break;
+    }
+    invokeList[i] = json;
+  }
+
+  if (everyItemIsToJsonInvokable) {
+    return invokeList;
+  } else {
+    return _serializedJsonResponse(data);
+  }
 }
 
 // TODO serialize Iterable<Person>
