@@ -42,7 +42,7 @@ List<String> indexMacro(File docFile, List<String> lines) {
   for (var line in lines) {
     if (line.trim().startsWith('@index')) {
       result.add('## Table of contents');
-      
+
       lines
           .map((line) => line.trim())
           .where((line) => line.startsWith('##'))
@@ -76,7 +76,7 @@ List<String> codeMacro(File docFile, List<String> lines) {
       var path = line.substring(line.indexOf('@code') + '@code'.length).trim();
       var file = File(path);
       var extension =
-      file.path.substring(file.path.lastIndexOf('.') + '.'.length);
+          file.path.substring(file.path.lastIndexOf('.') + '.'.length);
       var code = file.readAsStringSync().trim().split('\n');
 
       code =
