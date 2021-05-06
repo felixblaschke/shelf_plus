@@ -73,5 +73,3 @@ Object? _handleListResponse(List<dynamic> data) {
   }
 }
 
-// TODO serialize Iterable<Person>
-// TODO serialize List<Person>
