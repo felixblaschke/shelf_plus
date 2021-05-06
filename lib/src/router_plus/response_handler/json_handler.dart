@@ -54,22 +54,17 @@ Object? _handleListResponse(List<dynamic> data) {
   final invokeList = List<Object?>.filled(data.length, null, growable: false);
 
   /// Try to invoke '.toJson()' on every item
-  var everyItemIsToJsonInvokable = true;
-
   for (var i = 0; i < data.length; i++) {
     final item = data[i];
     final json = _invokeToJsonMethod(item);
+
+    /// Stop here => found item that does not support '.toJson()'
     if (json == null) {
-      everyItemIsToJsonInvokable = false;
-      break;
+      return _serializedJsonResponse(data);
     }
     invokeList[i] = json;
   }
 
-  if (everyItemIsToJsonInvokable) {
-    return invokeList;
-  } else {
-    return _serializedJsonResponse(data);
-  }
+  return invokeList;
 }
 
