@@ -43,6 +43,8 @@ you can't ever code without **Shelf Plus**.
   - [Custom accessors for model classes](#custom-accessors-for-model-classes)
   - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
+[**Isolates**](#isolates)
+
 [**Shelf Run**](#shelf-run)
 
 [**Examples**](#examples)
@@ -392,7 +394,46 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 }
 ```
 
+&nbsp;
 
+
+&nbsp;
+
+## Isolates
+
+If you to distribute request among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
+
+```dart
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() {
+  const kNumIsolates = 4;
+
+  for (var i = 0; i < kNumIsolates - 1; i++) {
+    Isolate.spawn(
+      startServer,
+      '',
+      debugName: i.toString(),
+    );
+  }
+  startServer(kNumIsolates);
+}
+
+void startServer(Object? arg) {
+  shelfRun(
+    init,
+    defaultSharedHttpServer: true,
+  );
+}
+
+Handler init() {
+  var app = Router().plus;
+
+  app.get('/', () => 'Hello from isolate: ${Isolate.current.debugName}');
+
+  return app;
+}
+```
 
 
 &nbsp;
@@ -429,6 +470,7 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 | SHELF_PORT           | 8080          | Port to bind the shelf application to    |
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
 | SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
+| SHELF_SHARED_HTTP_SERVER      | false          | Shares the combination of port address between isolates                        |
 
 You can override the default values with optional parameters in the `shelfRun()` function.
 
