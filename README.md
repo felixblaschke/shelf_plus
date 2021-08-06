@@ -403,11 +403,17 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 
 If you to distribute request among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
 
+The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
+To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
+
+`xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})`
+
 ```dart
+import 'dart:io';
 import 'package:shelf_plus/shelf_plus.dart';
 
 void main() {
-  const kNumIsolates = 4;
+  const kNumIsolates = 8;
 
   for (var i = 0; i < kNumIsolates - 1; i++) {
     Isolate.spawn(
@@ -429,7 +435,10 @@ void startServer(Object? arg) {
 Handler init() {
   var app = Router().plus;
 
-  app.get('/', () => 'Hello from isolate: ${Isolate.current.debugName}');
+  app.get('/', () async {
+    sleep(Duration(milliseconds: 500));
+    return 'Hello from isolate: ${Isolate.current.debugName}';
+  });
 
   return app;
 }
