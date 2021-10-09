@@ -7,7 +7,7 @@ late Middleware middlewareB;
 late Middleware middlewareC;
 
 Handler init() {
-  //@start
+  // #begin
   var app = Router().plus;
 
   app.use(middlewareA); // apply to all routes
@@ -17,6 +17,6 @@ Handler init() {
 
   // combine middleware with + operator
   app.get('/request2', () => 'response', use: middlewareB + middlewareC);
-  //@end
+  // #end
   return app;
 }

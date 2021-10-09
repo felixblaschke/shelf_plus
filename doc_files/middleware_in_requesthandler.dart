@@ -7,10 +7,10 @@ late dynamic middleware;
 Handler init() {
   var app = Router().plus;
 
-  //@start
+  // #begin
   app.get('/request/<value>', (Request request, String value) {
     return middleware(value) >> 'response';
   });
-  //@end
+  // #end
   return app;
 }

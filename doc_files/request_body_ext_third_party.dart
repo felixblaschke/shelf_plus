@@ -6,10 +6,10 @@ class OtherBodyFormat {}
 
 dynamic ThirdPartyLib;
 
-//@start
+// #begin
 extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
   Future<OtherBodyFormat> get asOtherFormat async {
     return ThirdPartyLib().process(request.read());
   }
 }
-//@end
+// #end

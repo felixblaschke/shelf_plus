@@ -8,13 +8,13 @@ dynamic pdfService;
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   app.get('/wallpaper/download', () => File('image.jpg'), use: download());
 
   app.get('/invoice/<id>', (Request request, String id) {
     File document = pdfService.generateInvoice(id);
     return download(filename: 'invoice_$id.pdf') >> document;
   });
-  //@end
+  // #end
   return app;
 }

@@ -6,12 +6,12 @@ void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   app.post('/person', (Request request) async {
     var person = await request.body.asPerson;
     return 'You send me: ${person.name}';
   });
-  //@end
+  // #end
   return app;
 }
 

@@ -3,8 +3,9 @@ import 'package:shelf_plus/shelf_plus.dart';
 void main() => shelfRun(init);
 
 Handler init() {
-  //@start
   var app = Router().plus;
-  //@end
+  // #begin
+  app.get('/path/to/match', () => 'a response');
+  // #end
   return app;
 }
