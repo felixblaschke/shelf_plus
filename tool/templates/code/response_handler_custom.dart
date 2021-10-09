@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:shelf_plus/shelf_plus.dart';
 
 void main() => shelfRun(init);

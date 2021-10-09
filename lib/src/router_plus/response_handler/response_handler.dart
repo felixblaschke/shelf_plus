@@ -59,7 +59,7 @@ Future<Response> resolveResponse(Request request, dynamic result) async {
   var tries = 0;
 
   /// Repeat until result type is shelf [Response]
-  while (!(result is Response)) {
+  while (result is! Response) {
     var resultHandled = false;
 
     /// Iterate over all registered handlers

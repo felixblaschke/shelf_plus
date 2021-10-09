@@ -32,7 +32,7 @@ void main() {
     var body = <int>[];
 
     app.post('/route', (Request request) async {
-      var stream = await request.body.asBinary;
+      var stream = request.body.asBinary;
       await for (var list in stream) {
         body.addAll(list);
       }
