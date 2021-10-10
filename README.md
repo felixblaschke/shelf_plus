@@ -1,3 +1,4 @@
+<!-- This file uses generated code. Visit https://pub.dev/packages/readme_helper for usage information. -->
 # Shelf Plus
 
 **Shelf Plus** is a **quality of life** addon for your server-side development within
