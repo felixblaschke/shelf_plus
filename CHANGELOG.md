@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Upgrade `shelf_hotreload` package
+
 ## 1.0.0
 
 - Raise Dart minimum SDK version 2.14
