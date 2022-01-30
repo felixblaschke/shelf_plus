@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Fix error in response_handler when returning an empty list
+
 ## 1.0.1
 
 - Upgrade `shelf_hotreload` package
