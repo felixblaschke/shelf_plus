@@ -69,6 +69,7 @@ void main() {
 
     app.get('/object', () => {'name': 'john', 'age': 42});
     app.get('/list', () => [1, 2, 3]);
+    app.get('/emptylist', () => []);
     app.get('/iterable', () => [1, 2, 3, 4, 5].where((n) => n > 2));
     app.get('/persons', () => persons);
     app.get('/persons/john', () => persons.where((p) => p.firstName == 'John'));
@@ -96,6 +97,10 @@ void main() {
     expect(r5.headers['content-type']?.first, 'application/json');
     expect(r5.data[0]['firstName'], 'John');
     expect(r5.data[0]['lastName'], 'Doe');
+
+    var r6 = await server.fetch('get', '/emptylist');
+    expect(r6.headers['content-type']?.first, 'application/json');
+    expect(r6.data, []);
   });
 
   test('register response handler', () async {

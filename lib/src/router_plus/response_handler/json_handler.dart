@@ -20,7 +20,13 @@ ResponseHandler get jsonHandler => (Request request, dynamic data) {
 
       /// Serialize lists
       if (data is List<dynamic>) {
-        return _handleListResponse(data);
+        if (data.isEmpty) {
+          // Return empty list early
+          return _serializedJsonResponse([]);
+        } else {
+          // Further process each item
+          return _handleListResponse(data);
+        }
       }
 
       /// Handle Iterable by turning them into lists (process with next iteration)
