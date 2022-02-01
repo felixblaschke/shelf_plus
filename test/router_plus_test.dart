@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart';
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf_router/shelf_router.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:test/test.dart';
 
 import 'test_data/person.dart';
@@ -69,6 +68,7 @@ void main() {
 
     app.get('/object', () => {'name': 'john', 'age': 42});
     app.get('/list', () => [1, 2, 3]);
+    app.get('/emptylist', () => []);
     app.get('/iterable', () => [1, 2, 3, 4, 5].where((n) => n > 2));
     app.get('/persons', () => persons);
     app.get('/persons/john', () => persons.where((p) => p.firstName == 'John'));
@@ -96,6 +96,10 @@ void main() {
     expect(r5.headers['content-type']?.first, 'application/json');
     expect(r5.data[0]['firstName'], 'John');
     expect(r5.data[0]['lastName'], 'Doe');
+
+    var r6 = await server.fetch('get', '/emptylist');
+    expect(r6.headers['content-type']?.first, 'application/json');
+    expect(r6.data, []);
   });
 
   test('register response handler', () async {
@@ -264,6 +268,36 @@ void main() {
     expect(r2.headers[HttpHeaders.contentTypeHeader]?.first,
         'application/octet-stream');
     expect(r2.data.length, 14897);
+  });
+
+  test('websocket handler', () async {
+    var app = Router().plus;
+
+    app.get('/ws', () {
+      return WebSocketSession(
+          onOpen: (session) => session.send('open'),
+          onMessage: (session, data) {
+            session.send("message: $data");
+            session.close();
+          });
+    });
+
+    server = await runTestServer(app);
+
+    final channel = WebSocketChannel.connect(
+      Uri.parse('${server.websocketHost}/ws'),
+    );
+
+    var receivedData = [];
+
+    Future.delayed(Duration(milliseconds: 100))
+        .then((_) => channel.sink.add('websocket'));
+
+    await for (final data in channel.stream) {
+      receivedData.add(data);
+    }
+
+    expect(receivedData, ['open', 'message: websocket']);
   });
 }
 

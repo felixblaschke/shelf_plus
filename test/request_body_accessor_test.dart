@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:shelf/shelf.dart';
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:test/test.dart';
 
 import 'util/test_helper.dart';
@@ -32,7 +30,7 @@ void main() {
     var body = <int>[];
 
     app.post('/route', (Request request) async {
-      var stream = await request.body.asBinary;
+      var stream = request.body.asBinary;
       await for (var list in stream) {
         body.addAll(list);
       }

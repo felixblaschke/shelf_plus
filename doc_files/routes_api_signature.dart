@@ -4,7 +4,7 @@ void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   app.get('/minimalistic', () => 'response');
 
   app.get('/with/request', (Request request) => 'response');
@@ -15,6 +15,6 @@ Handler init() {
     // alternative access to route parameters
     return 'response: ${request.routeParameter('id')}';
   });
-  //@end
+  // #end
   return app;
 }

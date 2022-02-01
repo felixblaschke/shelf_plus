@@ -6,16 +6,13 @@ void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
-  app.post('/text', (Request request) async {
-    var text = await request.body.asString;
-    return 'You send me: $text';
-  });
 
   app.post('/json', (Request request) async {
-    var person = Person.fromJson(await request.body.asJson);
+    // #begin
+    var person = await request.body.as(Person.fromJson);
+    // #end
     return 'You send me: ${person.name}';
   });
-  //@end
+
   return app;
 }

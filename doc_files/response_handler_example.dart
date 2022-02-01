@@ -23,6 +23,14 @@ Handler init() {
 
   app.get('/file', () => File('thesis.pdf'));
 
+  app.get(
+      '/websocket',
+      () => WebSocketSession(
+            onOpen: (ws) => ws.send('Hello!'),
+            onMessage: (ws, data) => ws.send('You sent me: $data'),
+            onClose: (ws) => ws.send('Bye!'),
+          ));
+
   return app;
 }
 

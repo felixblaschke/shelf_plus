@@ -1,10 +1,12 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:shelf_plus/shelf_plus.dart';
 
 void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   // define custom ResponseHandler
   ResponseHandler catResponseHandler = (Request request, dynamic maybeCat) =>
       maybeCat is Cat ? maybeCat.interact() : null;
@@ -13,7 +15,7 @@ Handler init() {
   app.use(catResponseHandler.middleware);
 
   app.get('/cat', () => Cat());
-  //@end
+  // #end
   return app;
 }
 

@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_function_declarations_over_variables
+
 import 'package:dio/dio.dart' as dio;
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
 
 void main() {

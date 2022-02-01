@@ -4,8 +4,8 @@ void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   app.get('/', () => '<h1>Hi!</h1>', use: typeByExtension('html'));
-  //@end
+  // #end
   return app;
 }

@@ -9,7 +9,7 @@ void main() => shelfRun(init);
 late dynamic middleware;
 
 Handler init() {
-  //@start
+  // #begin
   var app = Router().plus;
 
   app.use(middleware());
@@ -23,6 +23,6 @@ Handler init() {
   app.get('/file', () => File('path/to/file.zip'));
 
   app.get('/person', () => Person(name: 'John', age: 42));
-  //@end
+  // #end
   return app;
 }

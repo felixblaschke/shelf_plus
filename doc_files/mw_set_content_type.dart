@@ -4,10 +4,10 @@ void main() => shelfRun(init);
 
 Handler init() {
   var app = Router().plus;
-  //@start
+  // #begin
   app.get('/one', () => setContentType('application/json') >> '1');
 
   app.get('/two', () => '2', use: setContentType('application/json'));
-  //@end
+  // #end
   return app;
 }
