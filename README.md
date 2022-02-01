@@ -472,10 +472,10 @@ void main() {
       debugName: i.toString(),
     );
   }
-  startServer(kNumIsolates);
+  startServer(null);
 }
 
-void startServer(Object? arg) {
+void startServer(Object? _) {
   shelfRun(
     init,
     defaultSharedHttpServer: true,
