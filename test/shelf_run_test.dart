@@ -2,7 +2,6 @@
 
 import 'package:dio/dio.dart' as dio;
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf/shelf.dart';
 import 'package:test/test.dart';
 
 void main() {

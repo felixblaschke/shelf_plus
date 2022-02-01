@@ -1,4 +1,4 @@
-name: example_rest
+name: example_websocket_chat
 description: Shelf Plus Example
 
 environment:
@@ -7,10 +7,6 @@ environment:
 dependencies:
   shelf_plus:
     path: ../../
-  json_annotation: ^4.0.1
-  uuid: 3.0.4
 
 dev_dependencies:
   lints: ^1.0.0
-  json_serializable: ^4.1.1
-  build_runner: ^2.0.1

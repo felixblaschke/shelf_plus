@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:shelf/shelf.dart';
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf_router/shelf_router.dart';
 import 'package:test/test.dart';
 
 import 'util/test_helper.dart';

@@ -28,6 +28,10 @@ class TestServer {
     return 'http://localhost:${server?.port}';
   }
 
+  String get websocketHost {
+    return 'ws://localhost:${server?.port}';
+  }
+
   Future<dio.Response<T>> fetch<T>(String method, String path) async {
     return await dio.Dio().request<T>('$host$path',
         options: dio.Options(method: method.toUpperCase()));
