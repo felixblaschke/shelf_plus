@@ -52,6 +52,7 @@ you can't ever code without **Shelf Plus**.
 
 [**Examples**](#examples)
   - [Rest Service](#rest-service)
+  - [WebSocket chat server](#websocket-chat-server)
 <!-- // end of #toc -->
 
 <!-- #space 1 -->
@@ -175,14 +176,15 @@ ResponseHandler process the **return value** of a route handler, until it matche
 
 #### Build-in ResponseHandler
 
-| Source                                   | Result                                                | Use case                                                                                 |
-| ---------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `String`                                 | Shelf `Response`                                      | Respond with a text (text/plain)                                                         |
-| `Uint8List`, `Stream<List<int>>`         | Shelf `Response`                                      | Respond with binary (application/octet-stream)                                           |
-| `Map<String, dynamic>`, `List<dynamic>>` | Shelf `Response`                                      | Respond with JSON (application/json)                                                     |
-| Any Type having a `toJson()` method      | `Map<String, dynamic>`, `List<dynamic>>` *(expected)* | Provide serialization support for classes                                                |
-| Shelf `Handler`                          | Shelf `Response`                                      | Processing Shelf-based Middleware or Handler                                             |
-| `File` (dart:io)                         | Shelf `Response`                                      | Respond with file contents (using [shelf_static](https://pub.dev/packages/shelf_static)) |
+| Return type                              | Use case                                                                                            |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `String`                                 | Respond with a text (text/plain)                                                                    |
+| `Uint8List`, `Stream<List<int>>`         | Respond with binary (application/octet-stream)                                                      |
+| `Map<String, dynamic>`, `List<dynamic>>` | Respond with JSON (application/json)                                                                |
+| Any Type having a `toJson()` method      | Serialization support for classes                                                                   |
+| `File` (dart:io)                         | Respond with file contents (using [shelf_static](https://pub.dev/packages/shelf_static))            |
+| `WebSocketSession` (shelf_plus)          | Create a websocket connection (using [shelf_web_socket](https://pub.dev/packages/shelf_web_socket)) |
+| `Handler` (shelf)                        | Processing Shelf-based Middleware or Handler                                                        |
 
 *Example:*
 
@@ -212,6 +214,14 @@ Handler init() {
   app.get('/handler', () => typeByExtension('html') >> '<h1>Hello</h1>');
 
   app.get('/file', () => File('thesis.pdf'));
+
+  app.get(
+      '/websocket',
+      () => WebSocketSession(
+            onOpen: (ws) => ws.send('Hello!'),
+            onMessage: (ws, data) => ws.send('You sent me: $data'),
+            onClose: (ws) => ws.send('Bye!'),
+          ));
 
   return app;
 }
@@ -462,7 +472,9 @@ for hot-reload to work properly.
 To enable hot-reload you need either run your app with the IDE's **debug profile**, or
 enable vm-service from the command line: 
 
-```dart run --enable-vm-service my_app.dart```
+```
+dart run --enable-vm-service my_app.dart
+```
 
 Shelf Run uses a default configuration, that can be modified via **environment variables**:
 
@@ -480,8 +492,12 @@ void main() => shelfRun(init, defaultBindPort: 3000);
 ```
 <!-- // end of #code -->
 
+<!-- #space 2 -->
 
-<!-- #space2 -->
+&nbsp;
+
+&nbsp;
+<!-- // end of #space -->
 ## Examples
 
 ### Rest Service
@@ -575,6 +591,66 @@ class Person {
   Map<String, dynamic> toJson() => _$PersonToJson(this);
 
   static Person fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
+}
+```
+<!-- // end of #code -->
+
+<!-- #space 1 -->
+
+&nbsp;
+<!-- // end of #space -->
+
+
+### WebSocket chat server
+
+Implementation of a WebSocket-based chat application. ([Full sources](/example/example_websocket_chat/))
+
+**example_websocket_chat.dart**
+<!-- #code example/example_websocket_chat/bin/example_websocket_chat.dart -->
+```dart
+import 'dart:io';
+
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() => shelfRun(init);
+
+Handler init() {
+  var app = Router().plus;
+
+  // HTML-based web client
+  app.get('/', () => File('public/html_client.html'));
+
+  // Track connected clients
+  var users = <WebSocketSession>[];
+
+  // Web socket route
+  app.get(
+    '/ws',
+    () => WebSocketSession(
+      onOpen: (ws) {
+        // Join chat
+        users.add(ws);
+        users
+            .where((user) => user != ws)
+            .forEach((user) => user.send('A new user joined the chat.'));
+      },
+      onClose: (ws) {
+        // Leave chat
+        users.remove(ws);
+        for (var user in users) {
+          user.send('A user has left.');
+        }
+      },
+      onMessage: (ws, dynamic data) {
+        // Deliver messages to all users
+        for (var user in users) {
+          user.send(data);
+        }
+      },
+    ),
+  );
+
+  return app;
 }
 ```
 <!-- // end of #code -->

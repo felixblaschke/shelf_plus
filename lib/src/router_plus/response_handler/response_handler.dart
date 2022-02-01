@@ -7,6 +7,9 @@ import 'file_handler.dart';
 import 'json_handler.dart';
 import 'shelf_handler_handler.dart';
 import 'string_handler.dart';
+import 'web_socket_handler.dart';
+
+export './web_socket/web_socket_session.dart';
 
 /// Model for converting an object into another one.
 ///
@@ -46,6 +49,7 @@ var _defaultHandlers = <ResponseHandler>[
   jsonHandler,
   shelfHandlerHandler,
   fileHandler,
+  webSocketHandler,
 ];
 
 /// Resolves a shelf [Response] from generic [result]

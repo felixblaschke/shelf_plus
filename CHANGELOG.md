@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Added WebSocket support
+
 ## 1.0.2
 
 - Fix error in response_handler when returning an empty list

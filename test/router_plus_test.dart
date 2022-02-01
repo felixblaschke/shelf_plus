@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart';
 import 'package:shelf_plus/shelf_plus.dart';
-import 'package:shelf_router/shelf_router.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:test/test.dart';
 
 import 'test_data/person.dart';
@@ -269,6 +268,36 @@ void main() {
     expect(r2.headers[HttpHeaders.contentTypeHeader]?.first,
         'application/octet-stream');
     expect(r2.data.length, 14897);
+  });
+
+  test('websocket handler', () async {
+    var app = Router().plus;
+
+    app.get('/ws', () {
+      return WebSocketSession(
+          onOpen: (session) => session.send('open'),
+          onMessage: (session, data) {
+            session.send("message: $data");
+            session.close();
+          });
+    });
+
+    server = await runTestServer(app);
+
+    final channel = WebSocketChannel.connect(
+      Uri.parse('${server.websocketHost}/ws'),
+    );
+
+    var receivedData = [];
+
+    Future.delayed(Duration(milliseconds: 100))
+        .then((_) => channel.sink.add('websocket'));
+
+    await for (final data in channel.stream) {
+      receivedData.add(data);
+    }
+
+    expect(receivedData, ['open', 'message: websocket']);
   });
 }
 
