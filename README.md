@@ -451,7 +451,7 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 
 ## Isolates
 
-If you to distribute request among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
+If you want to distribute requests among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
 
 The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
 To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
