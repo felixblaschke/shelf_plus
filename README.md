@@ -482,8 +482,8 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 | -------------------- | ------------- | ---------------------------------------- |
 | SHELF_PORT           | 8080          | Port to bind the shelf application to    |
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
-| SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
-| SHELF_SHARED_HTTP_SERVER      | false          | Shares the combination of port address between isolates                        |
+| SHELF_HOTRELOAD      | true          | Enables hot-reload                        |
+| SHELF_SHARED         | false         | Enables [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) option for multithreading |
 
 You can override the default values with optional parameters in the `shelfRun()` function.
 
