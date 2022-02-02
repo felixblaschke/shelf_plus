@@ -48,6 +48,8 @@ you can't ever code without **Shelf Plus**.
   - [Custom accessors for model classes](#custom-accessors-for-model-classes)
   - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
+[**Isolates**](#isolates)
+
 [**Shelf Run**](#shelf-run)
 
 [**Examples**](#examples)
@@ -442,7 +444,55 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 ```
 <!-- // end of #code -->
 
+&nbsp;
 
+
+&nbsp;
+
+## Isolates
+
+If you want to distribute requests among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
+
+The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
+To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
+
+`xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})`
+
+```dart
+import 'dart:io';
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() {
+  const kNumIsolates = 8;
+
+  for (var i = 0; i < kNumIsolates - 1; i++) {
+    Isolate.spawn(
+      startServer,
+      '',
+      debugName: i.toString(),
+    );
+  }
+  startServer(null);
+}
+
+void startServer(Object? _) {
+  shelfRun(
+    init,
+    defaultSharedHttpServer: true,
+  );
+}
+
+Handler init() {
+  var app = Router().plus;
+
+  app.get('/', () async {
+    sleep(Duration(milliseconds: 500));
+    return 'Hello from isolate: ${Isolate.current.debugName}';
+  });
+
+  return app;
+}
+```
 
 <!-- #space 2 -->
 
@@ -483,6 +533,7 @@ Shelf Run uses a default configuration, that can be modified via **environment v
 | SHELF_PORT           | 8080          | Port to bind the shelf application to    |
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
 | SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
+| SHELF_SHARED_HTTP_SERVER      | false          | Shares the combination of port address between isolates                        |
 
 You can override the default values with optional parameters in the `shelfRun()` function.
 
