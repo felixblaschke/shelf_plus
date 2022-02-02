@@ -14,16 +14,16 @@ import 'package:supercharged_dart/supercharged_dart.dart';
 /// - SHELF_PORT: port to run (default 8080)
 /// - SHELF_ADDRESS: address to bind to (default 'localhost')
 /// - SHELF_HOTRELOAD: enable (true) or disable (false) hot reload (default true)
-/// - SHELF_SHARED_HTTP_SERVER: enable (true) or disable (false) sharing the underlying http server. Should be activated when serving in different isolates (default false)
+/// - SHELF_SHARED: enable (true) or disable (false) [sharing](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) the underlying http server. Should be activated when serving in different isolates. (default false)
 ///
 /// The default values can be overridden by setting [defaultBindPort],
-/// [defaultBindAddress] or [defaultEnableHotReload].
+/// [defaultBindAddress], [defaultEnableHotReload] or [defaultShared].
 Future<ShelfRunContext> shelfRun(
   FutureOr<shelf.Handler> Function() init, {
   int defaultBindPort = 8080,
   String defaultBindAddress = 'localhost',
   bool defaultEnableHotReload = true,
-  bool defaultSharedHttpServer = false,
+  bool defaultShared = false,
 }) async {
   var context = ShelfRunContext();
 
@@ -39,7 +39,7 @@ Future<ShelfRunContext> shelfRun(
         init,
         defaultBindPort: defaultBindPort,
         defaultBindAddress: defaultBindAddress,
-        defaultSharedHttpServer: defaultSharedHttpServer,
+        defaultShared: defaultShared,
       );
       context._server = server;
       return server;
@@ -49,7 +49,7 @@ Future<ShelfRunContext> shelfRun(
       init,
       defaultBindPort: defaultBindPort,
       defaultBindAddress: defaultBindAddress,
-      defaultSharedHttpServer: defaultSharedHttpServer,
+      defaultShared: defaultShared,
     );
   }
 
@@ -61,18 +61,14 @@ Future<HttpServer> _createServer(
   FutureOr<shelf.Handler> Function() init, {
   required int defaultBindPort,
   required String defaultBindAddress,
-  required bool defaultSharedHttpServer,
+  required bool defaultShared,
 }) async {
   var port = _env('SHELF_PORT')?.toInt() ?? defaultBindPort;
   var address = _env('SHELF_ADDRESS') ?? defaultBindAddress;
-  
-  var sharedServer = defaultSharedHttpServer;
-  if (_env('SHELF_SHARED_HTTP_SERVER') == 'true') {
-    sharedServer = true;
-  }
+  var shared = _env('SHELF_SHARED')?.toBool() ?? defaultShared;
 
   var handler = await init();
-  final server = await io.serve(handler, address, port, shared: sharedServer);
+  final server = await io.serve(handler, address, port, shared: shared);
   print('shelfRun HTTP service running on port ${server.port}');
   return server;
 }
@@ -91,4 +87,8 @@ class ShelfRunContext {
   }
 
   ShelfRunContext();
+}
+
+extension ToBool on String {
+  toBool() => toLowerCase().trim() == 'true';
 }

@@ -26,4 +26,8 @@ void main() {
 
     await ctx.close();
   });
+
+  test('shelf run - isolates / shared', () async {
+    fail('implement me');
+  });
 }

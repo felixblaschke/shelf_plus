@@ -48,9 +48,9 @@ you can't ever code without **Shelf Plus**.
   - [Custom accessors for model classes](#custom-accessors-for-model-classes)
   - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
-[**Isolates**](#isolates)
-
 [**Shelf Run**](#shelf-run)
+
+[**Multithreading (Isolates)**](#multithreading-(isolates))
 
 [**Examples**](#examples)
   - [Rest Service](#rest-service)
@@ -444,56 +444,6 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 ```
 <!-- // end of #code -->
 
-&nbsp;
-
-
-&nbsp;
-
-## Isolates
-
-If you want to distribute requests among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultSharedHttpServer` parameter or the `SHELF_SHARED_HTTP_SERVER` environment variable to true.
-
-The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
-To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
-
-`xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})`
-
-```dart
-import 'dart:io';
-import 'package:shelf_plus/shelf_plus.dart';
-
-void main() {
-  const kNumIsolates = 8;
-
-  for (var i = 0; i < kNumIsolates - 1; i++) {
-    Isolate.spawn(
-      startServer,
-      '',
-      debugName: i.toString(),
-    );
-  }
-  startServer(null);
-}
-
-void startServer(Object? _) {
-  shelfRun(
-    init,
-    defaultSharedHttpServer: true,
-  );
-}
-
-Handler init() {
-  var app = Router().plus;
-
-  app.get('/', () async {
-    sleep(Duration(milliseconds: 500));
-    return 'Hello from isolate: ${Isolate.current.debugName}';
-  });
-
-  return app;
-}
-```
-
 <!-- #space 2 -->
 
 &nbsp;
@@ -542,6 +492,61 @@ You can override the default values with optional parameters in the `shelfRun()`
 void main() => shelfRun(init, defaultBindPort: 3000);
 ```
 <!-- // end of #code -->
+
+
+<!-- #space 2 -->
+
+&nbsp;
+
+&nbsp;
+<!-- // end of #space -->
+
+
+## Multithreading (Isolates)
+
+https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional
+
+If you want to distribute requests among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultShared` parameter or the `SHELF_SHARED` environment variable to true.
+
+The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
+To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
+
+
+<!-- #code doc_files/isolates.dart -->
+```dart
+import 'dart:isolate';
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() {
+  const numberOfIsolates = 8;
+
+  for (var i = 0; i < numberOfIsolates - 1; i++) {
+    Isolate.spawn(spawnServer, null, debugName: i.toString()); // isolate 0..7
+  }
+  spawnServer(null); // use main isolate as the 8th isolate
+}
+
+void spawnServer(_) => shelfRun(init, defaultShared: true);
+
+Handler init() {
+  var app = Router().plus;
+
+  app.get('/', () async {
+    await Future.delayed(Duration(milliseconds: 500)); // simulate load
+    return 'Hello from isolate: ${Isolate.current.debugName}';
+  });
+
+  return app;
+}
+```
+<!-- // end of #code -->
+
+To test your isolates setup:
+
+`xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})`
+
+
+
 
 <!-- #space 2 -->
 
