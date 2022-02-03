@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Added multithreading / isolates support
+
 ## 1.1.0
 
 - Added WebSocket support
