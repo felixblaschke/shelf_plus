@@ -49,8 +49,8 @@ you can't ever code without **Shelf Plus**.
   - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
 [**Shelf Run**](#shelf-run)
-
-[**Multithreading (Isolates)**](#multithreading-(isolates))
+  - [Custom configuration](#custom-configuration)
+  - [Multithreading](#multithreading)
 
 [**Examples**](#examples)
   - [Rest Service](#rest-service)
@@ -476,6 +476,13 @@ enable vm-service from the command line:
 dart run --enable-vm-service my_app.dart
 ```
 
+<!-- #space 1 -->
+
+&nbsp;
+<!-- // end of #space -->
+
+### Custom configuration
+
 Shelf Run uses a default configuration, that can be modified via **environment variables**:
 
 | Environment variable | Default value | Description                              |
@@ -494,23 +501,19 @@ void main() => shelfRun(init, defaultBindPort: 3000);
 <!-- // end of #code -->
 
 
-<!-- #space 2 -->
-
-&nbsp;
+<!-- #space 1 -->
 
 &nbsp;
 <!-- // end of #space -->
 
 
-## Multithreading (Isolates)
+### Multithreading
 
-https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional
+Dart supports multithreading using isolates. This might increases the performance by utilizing more cores.
 
-If you want to distribute requests among multiple threads you can use isolates. The only thing to keep in mind is setting the `defaultShared` parameter or the `SHELF_SHARED` environment variable to true.
+You can enable the [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) by setting the `defaultShared` parameter or the `SHELF_SHARED` environment variable to `true`.
 
-The following sample demonstrates the parallelism by including a blocking operation inside (sleep).
-To test it you can run this example and then in a terminal run the following command. To see the difference you can change the number of isolates to 1 and compare the results.
-
+**Example of an application using multiple isolates**
 
 <!-- #code doc_files/isolates.dart -->
 ```dart
@@ -541,9 +544,11 @@ Handler init() {
 ```
 <!-- // end of #code -->
 
-To test your isolates setup:
+You can test this application and compare different count of isolates:
 
-`xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})`
+```bash
+xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})
+```
 
 
 
