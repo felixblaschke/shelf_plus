@@ -49,6 +49,8 @@ you can't ever code without **Shelf Plus**.
   - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
 [**Shelf Run**](#shelf-run)
+  - [Custom configuration](#custom-configuration)
+  - [Multithreading](#multithreading)
 
 [**Examples**](#examples)
   - [Rest Service](#rest-service)
@@ -442,8 +444,6 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
 ```
 <!-- // end of #code -->
 
-
-
 <!-- #space 2 -->
 
 &nbsp;
@@ -476,13 +476,21 @@ enable vm-service from the command line:
 dart run --enable-vm-service my_app.dart
 ```
 
+<!-- #space 1 -->
+
+&nbsp;
+<!-- // end of #space -->
+
+### Custom configuration
+
 Shelf Run uses a default configuration, that can be modified via **environment variables**:
 
 | Environment variable | Default value | Description                              |
 | -------------------- | ------------- | ---------------------------------------- |
 | SHELF_PORT           | 8080          | Port to bind the shelf application to    |
 | SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
-| SHELF_HOTRELOAD      | true          | Enable hot-reload                        |
+| SHELF_HOTRELOAD      | true          | Enables hot-reload                        |
+| SHELF_SHARED         | false         | Enables [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) option for multithreading |
 
 You can override the default values with optional parameters in the `shelfRun()` function.
 
@@ -491,6 +499,59 @@ You can override the default values with optional parameters in the `shelfRun()`
 void main() => shelfRun(init, defaultBindPort: 3000);
 ```
 <!-- // end of #code -->
+
+
+<!-- #space 1 -->
+
+&nbsp;
+<!-- // end of #space -->
+
+
+### Multithreading
+
+Dart supports multithreading using isolates. This might increases the performance by utilizing more cores.
+
+You can enable the [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) by setting the `defaultShared` parameter or the `SHELF_SHARED` environment variable to `true`.
+
+**Example of an application using multiple isolates**
+
+<!-- #code doc_files/isolates.dart -->
+```dart
+import 'dart:isolate';
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() {
+  const numberOfIsolates = 8;
+
+  for (var i = 0; i < numberOfIsolates - 1; i++) {
+    Isolate.spawn(spawnServer, null, debugName: i.toString()); // isolate 0..7
+  }
+  spawnServer(null); // use main isolate as the 8th isolate
+}
+
+void spawnServer(_) => shelfRun(init, defaultShared: true);
+
+Handler init() {
+  var app = Router().plus;
+
+  app.get('/', () async {
+    await Future.delayed(Duration(milliseconds: 500)); // simulate load
+    return 'Hello from isolate: ${Isolate.current.debugName}';
+  });
+
+  return app;
+}
+```
+<!-- // end of #code -->
+
+You can test this application and compare different count of isolates:
+
+```bash
+xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})
+```
+
+
+
 
 <!-- #space 2 -->
 
