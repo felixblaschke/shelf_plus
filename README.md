@@ -563,7 +563,7 @@ xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})
 
 ### Rest Service
 
-Implementation of a CRUD, rest-like backend service. ([Full sources](/example/example_rest/))
+Implementation of a CRUD, rest-like backend service. ([Full sources](example/example_rest/))
 
 
 
@@ -664,7 +664,7 @@ class Person {
 
 ### WebSocket chat server
 
-Implementation of a WebSocket-based chat application. ([Full sources](/example/example_websocket_chat/))
+Implementation of a WebSocket-based chat application. ([Full sources](example/example_websocket_chat/))
 
 **example_websocket_chat.dart**
 <!-- #code example/example_websocket_chat/bin/example_websocket_chat.dart -->

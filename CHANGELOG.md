@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Fixed link in README.md
+
 ## 1.2.0
 
 - Added multithreading / isolates support
