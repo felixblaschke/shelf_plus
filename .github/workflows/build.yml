@@ -29,11 +29,12 @@ jobs:
           dart pub get
           dart pub get --directory=example/example_rest
           dart pub get --directory=example/example_websocket_chat
-          dart pub get --directory=example/example_websocket_chat/flutter_chat
-
-      # Uncomment this step to verify the use of 'dart format' on each commit.
+          
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
+
+      - name: Remove Flutter example (irritates the Dart analyser)
+        run: rm -rf example/example_websocket_chat/flutter_chat
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
