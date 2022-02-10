@@ -29,6 +29,7 @@ jobs:
           dart pub get
           dart pub get --directory=example/example_rest
           dart pub get --directory=example/example_websocket_chat
+          dart pub get --directory=example/example_websocket_chat/flutter_chat
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       - name: Verify formatting
