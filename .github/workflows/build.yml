@@ -7,9 +7,9 @@ name: Build
 
 on:
   push:
-    branches: [ '*' ]
+    branches: ["*"]
   pull_request:
-    branches: [ '*' ]
+    branches: ["*"]
 
 jobs:
   build:
@@ -27,9 +27,10 @@ jobs:
       - name: Install dependencies
         run: |
           dart pub get
+          dart pub get --directory=example/example_cors
           dart pub get --directory=example/example_rest
           dart pub get --directory=example/example_websocket_chat
-          
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
