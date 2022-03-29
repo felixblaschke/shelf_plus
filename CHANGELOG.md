@@ -1,3 +1,7 @@
+## 1.2.2
+
+- Add cors example
+
 ## 1.2.1
 
 - Fixed link in README.md

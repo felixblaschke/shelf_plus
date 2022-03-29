@@ -53,6 +53,7 @@ you can't ever code without **Shelf Plus**.
   - [Multithreading](#multithreading)
 
 [**Examples**](#examples)
+  - [Enable CORS](#enable-cors)
   - [Rest Service](#rest-service)
   - [WebSocket chat server](#websocket-chat-server)
 <!-- // end of #toc -->
@@ -560,6 +561,31 @@ xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})
 &nbsp;
 <!-- // end of #space -->
 ## Examples
+
+
+### Enable CORS
+
+[CORS](https://developer.mozilla.org/docs/Web/HTTP/CORS) can be enabled by using the [shelf_cors_headers](https://pub.dev/packages/shelf_cors_headers) package:
+
+<!-- #code example/example_cors/bin/example_cors.dart -->
+```dart
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
+import 'package:shelf_plus/shelf_plus.dart';
+
+void main() => shelfRun(init);
+
+Handler init() {
+  var app = Router().plus;
+
+  app.use(corsHeaders()); // use CORS middleware
+
+  app.get('/', () => {'data': 'This API is CORS enabled.'});
+
+  return app;
+}
+```
+<!-- // end of #code -->
+
 
 ### Rest Service
 

@@ -1,0 +1,13 @@
+name: example_cors
+description: Shelf Plus Example
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  shelf_cors_headers: ^0.1.2
+  shelf_plus:
+    path: ../../
+
+dev_dependencies:
+  lints: ^1.0.0
