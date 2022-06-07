@@ -1,3 +1,7 @@
+## 1.2.3
+
+- Fixed middleware handling for undefined routes (e.g. CORS handling)
+
 ## 1.2.2
 
 - Add cors example

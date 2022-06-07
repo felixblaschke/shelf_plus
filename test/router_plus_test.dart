@@ -135,6 +135,22 @@ void main() {
     expect(await server.fetchBody<String>('get', '/number'), 'a(b(c(1)))');
   });
 
+  test('middleware without routes', () async {
+    var app = Router().plus;
+
+    Middleware returnHello() =>
+        (Handler _) => (Request request) async => Response.ok('hello');
+
+    app.use(returnHello());
+
+    server = await runTestServer(app);
+
+    expect(await server.fetchBody<String>('get', '/'), 'hello');
+    expect(await server.fetchBody<String>('post', '/dynamic_route'), 'hello');
+    expect(
+        await server.fetchBody<String>('options', '/dynamic_route'), 'hello');
+  });
+
   test('toJsonHandler', () async {
     var app = Router().plus;
 

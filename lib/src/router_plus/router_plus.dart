@@ -7,9 +7,9 @@ import 'response_handler/response_handler.dart';
 
 class _RouterPlusHandler {
   final Function handler;
-  final List<Middleware> middlewares;
+  final Middleware? localMiddleware;
 
-  _RouterPlusHandler(this.handler, this.middlewares);
+  _RouterPlusHandler(this.handler, this.localMiddleware);
 
   /// Match the signature of any shelf_router handler.
   FutureOr<Response> call(
@@ -31,13 +31,15 @@ class _RouterPlusHandler {
     String? p15,
     String? p16,
   ]) async {
-    var pipeline = Pipeline();
-
-    for (var middleware in middlewares) {
-      pipeline = pipeline.addMiddleware(middleware);
+    if (localMiddleware != null) {
+      /// Dynamically attach middleware to this request
+      return Pipeline()
+          .addMiddleware(localMiddleware!)
+          .addHandler(_handler)
+          .call(request);
     }
 
-    return pipeline.addHandler(_handler).call(request);
+    return _handler.call(request);
   }
 
   Future<Response> _handler(Request request) async {
@@ -77,7 +79,18 @@ class RouterPlus {
   RouterPlus({Router? existingRouter})
       : shelfRouter = existingRouter ?? Router();
 
-  Future<Response> call(Request request) => shelfRouter.call(request);
+  /// Process incoming request
+  Future<Response> call(Request request) async {
+    var pipeline = Pipeline();
+
+    /// Apply all global middlewares
+    for (var middleware in _middlewareList) {
+      pipeline = pipeline.addMiddleware(middleware);
+    }
+
+    /// Delegate to shelf_router
+    return pipeline.addHandler(shelfRouter).call(request);
+  }
 
   /// Add [handler] for [verb] requests to [route].
   ///
@@ -86,9 +99,8 @@ class RouterPlus {
   /// `HEAD` is always wrong. To explicitely implement a `HEAD` handler it must
   /// be registered before the `GET` handler.
   void add(String verb, String route, Function handler,
-      [List<Middleware>? middlewares]) {
-    middlewares ??= <Middleware>[];
-    shelfRouter.add(verb, route, _RouterPlusHandler(handler, middlewares));
+      [Middleware? localMiddleware]) {
+    shelfRouter.add(verb, route, _RouterPlusHandler(handler, localMiddleware));
     _routeAdded = true;
   }
 
@@ -96,7 +108,7 @@ class RouterPlus {
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void all(String route, Function handler, {Middleware? use}) {
-    shelfRouter.all(route, _RouterPlusHandler(handler, _middlewareList(use)));
+    shelfRouter.all(route, _RouterPlusHandler(handler, use));
     _routeAdded = true;
   }
 
@@ -116,55 +128,55 @@ class RouterPlus {
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void get(String route, Function handler, {Middleware? use}) =>
-      add('GET', route, handler, _middlewareList(use));
+      add('GET', route, handler, use);
 
   /// Handle `HEAD` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void head(String route, Function handler, {Middleware? use}) =>
-      add('HEAD', route, handler, _middlewareList(use));
+      add('HEAD', route, handler, use);
 
   /// Handle `POST` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void post(String route, Function handler, {Middleware? use}) =>
-      add('POST', route, handler, _middlewareList(use));
+      add('POST', route, handler, use);
 
   /// Handle `PUT` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void put(String route, Function handler, {Middleware? use}) =>
-      add('PUT', route, handler, _middlewareList(use));
+      add('PUT', route, handler, use);
 
   /// Handle `DELETE` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void delete(String route, Function handler, {Middleware? use}) =>
-      add('DELETE', route, handler, _middlewareList(use));
+      add('DELETE', route, handler, use);
 
   /// Handle `CONNECT` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void connect(String route, Function handler, {Middleware? use}) =>
-      add('CONNECT', route, handler, _middlewareList(use));
+      add('CONNECT', route, handler, use);
 
   /// Handle `OPTIONS` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void options(String route, Function handler, {Middleware? use}) =>
-      add('OPTIONS', route, handler, _middlewareList(use));
+      add('OPTIONS', route, handler, use);
 
   /// Handle `TRACE` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void trace(String route, Function handler, {Middleware? use}) =>
-      add('TRACE', route, handler, _middlewareList(use));
+      add('TRACE', route, handler, use);
 
   /// Handle `PATCH` request to [route] using [handler].
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void patch(String route, Function handler, {Middleware? use}) =>
-      add('PATCH', route, handler, _middlewareList(use));
+      add('PATCH', route, handler, use);
 
   /// Registers a [middleware] to use for all specified routes.
   ///
@@ -175,16 +187,8 @@ class RouterPlus {
       throw ArgumentError(
           'Please use the "use()" method before adding any other routes.');
     }
-    _middlewares.add(middleware);
+    _middlewareList.add(middleware);
   }
 
-  final _middlewares = <Middleware>[];
-
-  List<Middleware> _middlewareList(Middleware? use) {
-    var list = <Middleware>[
-      ..._middlewares,
-      if (use != null) use,
-    ];
-    return list;
-  }
+  final _middlewareList = <Middleware>[];
 }
