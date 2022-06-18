@@ -72,7 +72,8 @@ Future<HttpServer> _createServer(
   var shared = _env('SHELF_SHARED')?.toBool() ?? defaultShared;
 
   var handler = await init();
-  final server = await io.serve(handler, address, port, shared: shared, securityContext: securityContext);
+  final server = await io.serve(handler, address, port,
+      shared: shared, securityContext: securityContext);
   print('shelfRun HTTP service running on port ${server.port}');
   return server;
 }
