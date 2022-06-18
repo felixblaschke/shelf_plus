@@ -1,6 +1,7 @@
 ## 1.3.0
 
 - Add optional `SecurityContext` property to `shelfRun()`
+- Upgrade code base and update dependencies
 
 ## 1.2.3
 
