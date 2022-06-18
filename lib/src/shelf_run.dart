@@ -24,6 +24,7 @@ Future<ShelfRunContext> shelfRun(
   String defaultBindAddress = 'localhost',
   bool defaultEnableHotReload = true,
   bool defaultShared = false,
+  SecurityContext? securityContext,
 }) async {
   var context = ShelfRunContext();
 
@@ -40,6 +41,7 @@ Future<ShelfRunContext> shelfRun(
         defaultBindPort: defaultBindPort,
         defaultBindAddress: defaultBindAddress,
         defaultShared: defaultShared,
+        securityContext: securityContext,
       );
       context._server = server;
       return server;
@@ -50,6 +52,7 @@ Future<ShelfRunContext> shelfRun(
       defaultBindPort: defaultBindPort,
       defaultBindAddress: defaultBindAddress,
       defaultShared: defaultShared,
+      securityContext: securityContext,
     );
   }
 
@@ -62,13 +65,14 @@ Future<HttpServer> _createServer(
   required int defaultBindPort,
   required String defaultBindAddress,
   required bool defaultShared,
+  SecurityContext? securityContext,
 }) async {
   var port = _env('SHELF_PORT')?.toInt() ?? defaultBindPort;
   var address = _env('SHELF_ADDRESS') ?? defaultBindAddress;
   var shared = _env('SHELF_SHARED')?.toBool() ?? defaultShared;
 
   var handler = await init();
-  final server = await io.serve(handler, address, port, shared: shared);
+  final server = await io.serve(handler, address, port, shared: shared, securityContext: securityContext);
   print('shelfRun HTTP service running on port ${server.port}');
   return server;
 }
