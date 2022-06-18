@@ -26,6 +26,6 @@ Middleware download({String? filename}) =>
           final response = await innerHandler(request);
           return response.change(headers: {
             'content-disposition':
-                'attachment' + (filename != null ? '; filename=$filename' : '')
+                'attachment${filename != null ? '; filename=$filename' : ''}'
           });
         };
