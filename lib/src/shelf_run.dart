@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_hotreload/shelf_hotreload.dart';
-import 'package:supercharged_dart/supercharged_dart.dart';
 
 /// Mechanism to quickly run a shelf app.
 ///
@@ -94,6 +93,7 @@ class ShelfRunContext {
   ShelfRunContext();
 }
 
-extension ToBool on String {
+extension on String {
   toBool() => toLowerCase().trim() == 'true';
+  toInt() => int.parse(this);
 }
