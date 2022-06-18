@@ -1,3 +1,7 @@
+## 1.3.0
+
+- Add optional `SecurityContext` property to `shelfRun()`
+
 ## 1.2.3
 
 - Fixed middleware handling for undefined routes (e.g. CORS handling)
