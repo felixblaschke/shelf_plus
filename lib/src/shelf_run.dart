@@ -74,7 +74,7 @@ Future<HttpServer> _createServer(
   var handler = await init();
   final server = await io.serve(handler, address, port,
       shared: shared, securityContext: securityContext);
-  print('shelfRun HTTP service running on port ${server.port}');
+  stdout.writeln('shelfRun HTTP service running on port ${server.port}');
   return server;
 }
 
