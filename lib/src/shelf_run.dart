@@ -21,7 +21,7 @@ import 'package:supercharged_dart/supercharged_dart.dart';
 Future<ShelfRunContext> shelfRun(
   FutureOr<shelf.Handler> Function() init, {
   int defaultBindPort = 8080,
-  String defaultBindAddress = 'localhost',
+  Object defaultBindAddress = 'localhost',
   bool defaultEnableHotReload = true,
   bool defaultShared = false,
   SecurityContext? securityContext,
@@ -63,7 +63,7 @@ Future<ShelfRunContext> shelfRun(
 Future<HttpServer> _createServer(
   FutureOr<shelf.Handler> Function() init, {
   required int defaultBindPort,
-  required String defaultBindAddress,
+  required Object defaultBindAddress,
   required bool defaultShared,
   SecurityContext? securityContext,
 }) async {
