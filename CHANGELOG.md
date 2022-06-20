@@ -1,3 +1,7 @@
+## 1.4.0
+
+- Change type of `defaultBindAddress` to `Object` to mirror the `dart_io` API
+
 ## 1.3.0
 
 - Add optional `SecurityContext` property to `shelfRun()`
