@@ -1,4 +1,5 @@
 <!-- This file uses generated code. Visit https://pub.dev/packages/readme_helper for usage information. -->
+
 # Shelf Plus
 
 **Shelf Plus** is a **quality of life** addon for your server-side development within
@@ -6,6 +7,7 @@ the Shelf platform. It's a great base to **start off** your apps fast, while
 **maintaining full compatibility** with the **Shelf** ecosystem.
 
 <!-- #code doc_files/quickstart.dart -->
+
 ```dart
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -19,56 +21,56 @@ Handler init() {
   return app;
 }
 ```
+
 <!-- // end of #code -->
 
 It comes with a lot of awesome features, like **zero-configuration** initializer, build-in **hot-reload**
 and a **super powerful** and **intuitive router upgrade**. Continue reading and get to know why
 you can't ever code without **Shelf Plus**.
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 <!-- #toc -->
+
 ## Table of Contents
 
 [**Router Plus**](#router-plus)
-  - [Routes API](#routes-api)
-  - [Middleware](#middleware)
-  - [ResponseHandler](#responsehandler)
-  - [Cascading multiple routers](#cascading-multiple-routers)
+
+- [Routes API](#routes-api)
+- [Middleware](#middleware)
+- [ResponseHandler](#responsehandler)
+- [Cascading multiple routers](#cascading-multiple-routers)
 
 [**Middleware collection**](#middleware-collection)
-  - [setContentType](#setcontenttype)
-  - [typeByExtension](#typebyextension)
-  - [download](#download)
+
+- [setContentType](#setcontenttype)
+- [typeByExtension](#typebyextension)
+- [download](#download)
 
 [**Request body handling**](#request-body-handling)
-  - [Object deserialization](#object-deserialization)
-  - [Custom accessors for model classes](#custom-accessors-for-model-classes)
-  - [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
+
+- [Object deserialization](#object-deserialization)
+- [Custom accessors for model classes](#custom-accessors-for-model-classes)
+- [Custom accessors for third party body parser](#custom-accessors-for-third-party-body-parser)
 
 [**Shelf Run**](#shelf-run)
-  - [Custom configuration](#custom-configuration)
-  - [Multithreading](#multithreading)
+
+- [Custom configuration](#custom-configuration)
+- [Multithreading](#multithreading)
 
 [**Examples**](#examples)
-  - [Enable CORS](#enable-cors)
-  - [Rest Service](#rest-service)
-  - [WebSocket chat server](#websocket-chat-server)
+
+- [Enable CORS](#enable-cors)
+- [Rest Service](#rest-service)
+- [WebSocket chat server](#websocket-chat-server)
 <!-- // end of #toc -->
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ## Router Plus
 
-Router Plus is a **high-level abstraction layer** sitting directly on [shelf_router](https://pub.dev/packages/shelf_router). 
+Router Plus is a **high-level abstraction layer** sitting directly on [shelf_router](https://pub.dev/packages/shelf_router).
 It **shares the same [routing logic](https://pub.dev/documentation/shelf_router/latest/shelf_router/Router-class.html)**
 but allows you to handle responses in a very simple way.
 
 <!-- #code doc_files/router_plus_intro.dart -->
+
 ```dart
 var app = Router().plus;
 
@@ -84,24 +86,23 @@ app.get('/file', () => File('path/to/file.zip'));
 
 app.get('/person', () => Person(name: 'John', age: 42));
 ```
+
 <!-- // end of #code -->
 
 The core mechanic is called **ResponseHandler** which continuously refines a data structure,
 until it resolves in a [Shelf Response](https://pub.dev/documentation/shelf/latest/shelf/Response-class.html).
-This extensible system comes with support for text, json, binaries, files, json serialization and Shelf [Handler](https://pub.dev/documentation/shelf/latest/shelf/Handler.html). 
+This extensible system comes with support for text, json, binaries, files, json serialization and Shelf [Handler](https://pub.dev/documentation/shelf/latest/shelf/Handler.html).
 
 You can access the **Router Plus** by calling the **`.plus`** getter on a regular Shelf Router.
 
 <!-- #code doc_files/router_plus_upgrade.dart -->
+
 ```dart
 var app = Router().plus;
 ```
+
 <!-- // end of #code -->
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ### Routes API
 
 The API mimics the [Shelf Router](https://pub.dev/documentation/shelf_router/latest/shelf_router/Router-class.html)
@@ -109,9 +110,11 @@ methods. You basically use an HTTP verb, define a route to match and specify a h
 that generates the response.
 
 <!-- #code doc_files/routes_api_verb.dart -->
+
 ```dart
 app.get('/path/to/match', () => 'a response');
 ```
+
 <!-- // end of #code -->
 
 You can return any type, as long the **ResponseHandler** mechanism has a capable
@@ -122,6 +125,7 @@ object, specify it as the first parameter. Any other parameter will match the
 route parameters, if defined.
 
 <!-- #code doc_files/routes_api_signature.dart -->
+
 ```dart
 app.get('/minimalistic', () => 'response');
 
@@ -134,17 +138,15 @@ app.get('/customer/<id>', (Request request) {
   return 'response: ${request.routeParameter('id')}';
 });
 ```
+
 <!-- // end of #code -->
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ### Middleware
 
 Router Plus provides several options to place your middleware ([Shelf Middleware](https://pub.dev/documentation/shelf/latest/shelf/Middleware.html)).
 
 <!-- #code doc_files/middleware_intro.dart -->
+
 ```dart
 var app = Router().plus;
 
@@ -156,22 +158,21 @@ app.get('/request1', () => 'response', use: middlewareB);
 // combine middleware with + operator
 app.get('/request2', () => 'response', use: middlewareB + middlewareC);
 ```
+
 <!-- // end of #code -->
 
 You can also apply middleware dynamically inside a route handler, using the `>>` operator.
 
 <!-- #code doc_files/middleware_in_requesthandler.dart -->
+
 ```dart
 app.get('/request/<value>', (Request request, String value) {
   return middleware(value) >> 'response';
 });
 ```
+
 <!-- // end of #code -->
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ### ResponseHandler
 
 ResponseHandler process the **return value** of a route handler, until it matches a
@@ -189,9 +190,10 @@ ResponseHandler process the **return value** of a route handler, until it matche
 | `WebSocketSession` (shelf_plus)          | Create a websocket connection (using [shelf_web_socket](https://pub.dev/packages/shelf_web_socket)) |
 | `Handler` (shelf)                        | Processing Shelf-based Middleware or Handler                                                        |
 
-*Example:*
+_Example:_
 
 <!-- #code doc_files/response_handler_example.dart -->
+
 ```dart
 import 'dart:io';
 
@@ -238,14 +240,16 @@ class Person {
   Map<String, dynamic> toJson() => {'name': name};
 }
 ```
+
 <!-- // end of #code -->
 
 #### Custom ResponseHandler
 
 You can add your own ResponseHandler by using a [Shelf Middleware](https://pub.dev/documentation/shelf/latest/shelf/Middleware.html)
-created with the `.middleware` getter on a ResponseHandler function. 
+created with the `.middleware` getter on a ResponseHandler function.
 
 <!-- #code doc_files/response_handler_custom.dart -->
+
 ```dart
 // define custom ResponseHandler
 ResponseHandler catResponseHandler = (Request request, dynamic maybeCat) =>
@@ -256,19 +260,18 @@ app.use(catResponseHandler.middleware);
 
 app.get('/cat', () => Cat());
 ```
+
 <!-- // end of #code -->
 <!-- #code doc_files/response_handler_custom_cat.dart -->
+
 ```dart
 class Cat {
   String interact() => 'Purrrrr!';
 }
 ```
+
 <!-- // end of #code -->
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ### Cascading multiple routers
 
 Router Plus is compatible to a [Shelf Handler](https://pub.dev/documentation/shelf/latest/shelf/Handler.html).
@@ -276,6 +279,7 @@ So, you can also use it in a [Shelf Cascade](https://pub.dev/documentation/shelf
 This package provides a `cascade()` function, to quickly set up a cascade.
 
 <!-- #code doc_files/cascade.dart -->
+
 ```dart
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -292,56 +296,50 @@ Handler init() {
   return cascade([app1, app2]);
 }
 ```
-<!-- // end of #code -->
 
-
-
-<!-- #space 2 -->
-
-&nbsp;
-
-&nbsp;
-<!-- // end of #space -->
 ## Middleware collection
 
 This package comes with additional [Shelf Middleware](https://pub.dev/documentation/shelf/latest/shelf/Middleware.html)
 to simplify common tasks.
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
 ### setContentType
 
 Sets the `content-type` header of a `Response` to the specified **mime-type**.
 
 <!-- #code doc_files/mw_set_content_type.dart -->
+
 ```dart
 app.get('/one', () => setContentType('application/json') >> '1');
 
 app.get('/two', () => '2', use: setContentType('application/json'));
 ```
+
 <!-- // end of #code -->
 
 <!-- #space1 -->
+
 ### typeByExtension
 
 Sets the `content-type` header of a `Response` to the **mime-type** of the
 specified **file extension**.
 
 <!-- #code doc_files/mw_type_by_extension.dart -->
+
 ```dart
 app.get('/', () => '<h1>Hi!</h1>', use: typeByExtension('html'));
 ```
+
 <!-- // end of #code -->
 
 <!-- #space1 -->
+
 ### download
 
 Sets the `content-disposition` header of a `Response`, so browsers will download the
 server response instead of displaying it. Optionally you can define a specific **file name**.
 
 <!-- #code doc_files/mw_download.dart -->
+
 ```dart
 app.get('/wallpaper/download', () => File('image.jpg'), use: download());
 
@@ -350,15 +348,7 @@ app.get('/invoice/<id>', (Request request, String id) {
   return download(filename: 'invoice_$id.pdf') >> document;
 });
 ```
-<!-- // end of #code -->
 
-
-<!-- #space 2 -->
-
-&nbsp;
-
-&nbsp;
-<!-- // end of #space -->
 ## Request body handling
 
 Shelf Plus provides an extensible mechanism to process the HTTP body of a request.
@@ -367,6 +357,7 @@ You can access it by calling the `.body` getter on a [Shelf Request](https://pub
 It comes with build-in support for text, JSON and binary.
 
 <!-- #code doc_files/request_body_intro.dart -->
+
 ```dart
 app.post('/text', (Request request) async {
   var text = await request.body.asString;
@@ -378,20 +369,25 @@ app.post('/json', (Request request) async {
   return 'You send me: ${person.name}';
 });
 ```
+
 <!-- // end of #code -->
 
 <!-- #space1 -->
+
 ### Object deserialization
 
 A recommended way to deserialize a json-encoded object is to provide a
 **reviver function**, that can be generated by code generators.
 
 <!-- #code doc_files/request_body_deserialize1.dart -->
+
 ```dart
 var person = await request.body.as(Person.fromJson);
 ```
+
 <!-- // end of #code -->
 <!-- #code doc_files/request_body_deserialize2.dart -->
+
 ```dart
 class Person {
   final String name;
@@ -404,38 +400,45 @@ class Person {
   }
 }
 ```
+
 <!-- // end of #code -->
 
-
 <!-- #space1 -->
+
 ### Custom accessors for model classes
 
-You can add own accessors for model classes by creating an 
+You can add own accessors for model classes by creating an
 extension on `RequestBodyAccessor`.
 
 <!-- #code doc_files/request_body_ext_model1.dart -->
+
 ```dart
 extension PersonAccessor on RequestBodyAccessor {
   Future<Person> get asPerson async => Person.fromJson(await asJson);
 }
 ```
+
 <!-- // end of #code -->
 <!-- #code doc_files/request_body_ext_model2.dart -->
+
 ```dart
 app.post('/person', (Request request) async {
   var person = await request.body.asPerson;
   return 'You send me: ${person.name}';
 });
 ```
+
 <!-- // end of #code -->
 
 <!-- #space1 -->
+
 ### Custom accessors for third party body parser
 
 You can plug-in any other body parser by creating an
 extension on `RequestBodyAccessor`.
 
 <!-- #code doc_files/request_body_ext_third_party.dart -->
+
 ```dart
 extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
   Future<OtherBodyFormat> get asOtherFormat async {
@@ -443,19 +446,13 @@ extension OtherFormatBodyParserAccessor on RequestBodyAccessor {
   }
 }
 ```
-<!-- // end of #code -->
 
-<!-- #space 2 -->
-
-&nbsp;
-
-&nbsp;
-<!-- // end of #space -->
 ## Shelf Run
 
 Shelf Run is **zero-configuration** web-server initializer with **hot-reload** support.
 
 <!-- #code doc_files/shelf_run_intro.dart -->
+
 ```dart
 import 'package:shelf_plus/shelf_plus.dart';
 
@@ -465,48 +462,39 @@ Handler init() {
   return (Request request) => Response.ok('Hello!');
 }
 ```
+
 <!-- // end of #code -->
 
 It's important to use a dedicated `init` function, returning a [Shelf Handler](https://pub.dev/documentation/shelf/latest/shelf/Handler.html),
 for hot-reload to work properly.
 
 To enable hot-reload you need either run your app with the IDE's **debug profile**, or
-enable vm-service from the command line: 
+enable vm-service from the command line:
 
 ```
 dart run --enable-vm-service my_app.dart
 ```
 
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
-
 ### Custom configuration
 
 Shelf Run uses a default configuration, that can be modified via **environment variables**:
 
-| Environment variable | Default value | Description                              |
-| -------------------- | ------------- | ---------------------------------------- |
-| SHELF_PORT           | 8080          | Port to bind the shelf application to    |
-| SHELF_ADDRESS        | localhost     | Address to bind the shelf application to |
-| SHELF_HOTRELOAD      | true          | Enables hot-reload                        |
+| Environment variable | Default value | Description                                                                                                                                                                             |
+| -------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SHELF_PORT           | 8080          | Port to bind the shelf application to                                                                                                                                                   |
+| SHELF_ADDRESS        | localhost     | Address to bind the shelf application to                                                                                                                                                |
+| SHELF_HOTRELOAD      | true          | Enables hot-reload                                                                                                                                                                      |
 | SHELF_SHARED         | false         | Enables [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServer/bind.html#:~:text=The%20optional%20argument-,shared,-specifies%20whether%20additional) option for multithreading |
 
 You can override the default values with optional parameters in the `shelfRun()` function.
 
 <!-- #code doc_files/shelf_run_override_default.dart -->
+
 ```dart
 void main() => shelfRun(init, defaultBindPort: 3000);
 ```
+
 <!-- // end of #code -->
-
-
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
-
 
 ### Multithreading
 
@@ -517,6 +505,7 @@ You can enable the [shared](https://api.dart.dev/stable/2.16.0/dart-io/HttpServe
 **Example of an application using multiple isolates**
 
 <!-- #code doc_files/isolates.dart -->
+
 ```dart
 import 'dart:isolate';
 import 'package:shelf_plus/shelf_plus.dart';
@@ -543,6 +532,7 @@ Handler init() {
   return app;
 }
 ```
+
 <!-- // end of #code -->
 
 You can test this application and compare different count of isolates:
@@ -551,23 +541,22 @@ You can test this application and compare different count of isolates:
 xargs -I % -P 8 curl "http://localhost:8080" < <(printf '%s\n' {1..400})
 ```
 
-
-
-
 <!-- #space 2 -->
 
 &nbsp;
 
 &nbsp;
-<!-- // end of #space -->
-## Examples
 
+<!-- // end of #space -->
+
+## Examples
 
 ### Enable CORS
 
 [CORS](https://developer.mozilla.org/docs/Web/HTTP/CORS) can be enabled by using the [shelf_cors_headers](https://pub.dev/packages/shelf_cors_headers) package:
 
 <!-- #code example/example_cors/bin/example_cors.dart -->
+
 ```dart
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_plus/shelf_plus.dart';
@@ -584,17 +573,17 @@ Handler init() {
   return app;
 }
 ```
-<!-- // end of #code -->
 
+<!-- // end of #code -->
 
 ### Rest Service
 
 Implementation of a CRUD, rest-like backend service. ([Full sources](example/example_rest/))
 
-
-
 **example_rest.dart**
+
 <!-- #code example/example_rest/bin/example_rest.dart -->
+
 ```dart
 import 'dart:io';
 
@@ -647,10 +636,13 @@ Handler init() {
   return app;
 }
 ```
+
 <!-- // end of #code -->
 
 **person.dart**
+
 <!-- #code example/example_rest/bin/person.dart -->
+
 ```dart
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
@@ -680,20 +672,17 @@ class Person {
   static Person fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
 }
 ```
+
 <!-- // end of #code -->
-
-<!-- #space 1 -->
-
-&nbsp;
-<!-- // end of #space -->
-
 
 ### WebSocket chat server
 
 Implementation of a WebSocket-based chat application. ([Full sources](example/example_websocket_chat/))
 
 **example_websocket_chat.dart**
+
 <!-- #code example/example_websocket_chat/bin/example_websocket_chat.dart -->
+
 ```dart
 import 'dart:io';
 
@@ -740,4 +729,5 @@ Handler init() {
   return app;
 }
 ```
+
 <!-- // end of #code -->
