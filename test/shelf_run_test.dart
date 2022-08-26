@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_function_declarations_over_variables
 
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dio/dio.dart' as dio;
@@ -25,6 +26,48 @@ void main() {
 
     var response = await dio.Dio().get('http://localhost:8099/');
     expect(response.data!, 'ok');
+
+    await ctx.close();
+  });
+
+  test('shelf run - test onStarted behavior , hot reload off', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    Object? testAddress;
+    Object? testPort;
+    var ctx = await shelfRun(
+      init,
+      defaultEnableHotReload: false,
+      onStarted: (address, port) {
+        testAddress = address;
+        testPort = port;
+      },
+    );
+    expect(testAddress, isNotNull);
+    expect(testPort, isNotNull);
+
+    await ctx.close();
+  });
+
+  test('shelf run - test onStarted behavior , hot reload on', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    Object? testAddress;
+    Object? testPort;
+    var ctx = await shelfRun(
+      init,
+      defaultEnableHotReload: true,
+      onStarted: (address, port) {
+        testAddress = address;
+        testPort = port;
+      },
+    );
+
+    /// wait for server warm up when hot reload enabled.
+    await Future.delayed(Duration(seconds: 1));
+
+    expect(testAddress, isNotNull);
+    expect(testPort, isNotNull);
 
     await ctx.close();
   });
