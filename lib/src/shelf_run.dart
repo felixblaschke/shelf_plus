@@ -5,7 +5,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_hotreload/shelf_hotreload.dart';
 
-typedef OnStart = void Function(Object address, int port);
+typedef OnStarted = void Function(Object address, int port);
 
 /// Mechanism to quickly run a shelf app.
 ///
@@ -26,7 +26,7 @@ Future<ShelfRunContext> shelfRun(
   bool defaultEnableHotReload = true,
   bool defaultShared = false,
   SecurityContext? securityContext,
-  OnStart? onStart,
+  OnStarted? onStarted,
 }) async {
   var context = ShelfRunContext();
 
@@ -44,7 +44,7 @@ Future<ShelfRunContext> shelfRun(
         defaultBindAddress: defaultBindAddress,
         defaultShared: defaultShared,
         securityContext: securityContext,
-        onStart: onStart,
+        onStarted: onStarted,
       );
       context._server = server;
       return server;
@@ -56,7 +56,7 @@ Future<ShelfRunContext> shelfRun(
       defaultBindAddress: defaultBindAddress,
       defaultShared: defaultShared,
       securityContext: securityContext,
-      onStart: onStart,
+      onStarted: onStarted,
     );
   }
 
@@ -70,7 +70,7 @@ Future<HttpServer> _createServer(
   required Object defaultBindAddress,
   required bool defaultShared,
   SecurityContext? securityContext,
-  OnStart? onStart,
+  OnStarted? onStarted,
 }) async {
   var port = _env('SHELF_PORT')?.toInt() ?? defaultBindPort;
   var address = _env('SHELF_ADDRESS') ?? defaultBindAddress;
@@ -79,10 +79,10 @@ Future<HttpServer> _createServer(
   var handler = await init();
   final server = await io.serve(handler, address, port,
       shared: shared, securityContext: securityContext);
-  if (onStart == null) {
+  if (onStarted == null) {
     stdout.writeln('shelfRun HTTP service running on port ${server.port}');
   } else {
-    onStart(address, port);
+    onStarted(address, port);
   }
   return server;
 }
