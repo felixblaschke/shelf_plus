@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Added `onStarted` to `shelfRun()` to specify alternative / custom startup logging.
+
 ## 1.4.0
 
 - Change type of `defaultBindAddress` to `Object` to mirror the `dart_io` API
