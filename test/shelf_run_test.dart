@@ -54,8 +54,11 @@ void main() {
 
     Object? testAddress;
     Object? testPort;
+
+    // run server on different port duo to port conflicts during testing
     var ctx = await shelfRun(
       init,
+      defaultBindPort: 9090,
       defaultEnableHotReload: true,
       onStarted: (address, port) {
         testAddress = address;
