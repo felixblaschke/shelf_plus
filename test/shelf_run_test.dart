@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_function_declarations_over_variables
 
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dio/dio.dart' as dio;
