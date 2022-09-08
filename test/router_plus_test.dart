@@ -315,6 +315,29 @@ void main() {
 
     expect(receivedData, ['open', 'message: websocket']);
   });
+
+  test('middlewares scoped to router', () async {
+    var restrictedApp = Router().plus;
+    restrictedApp.use(
+      (innerHandler) => (Request request) async {
+        fail('Should not trigger this middleware');
+      },
+    );
+    restrictedApp.get('/protected', () => 'protected data');
+
+    var app = Router().plus;
+    
+    app.mount('/', restrictedApp);
+
+    app.get('/public', () {
+      return 'public data';
+    });
+
+    server = await runTestServer(app);
+
+    var r = await server.fetch('get', '/public');
+    expect(r.data, 'public data');
+  });
 }
 
 class Cat {
