@@ -7,9 +7,9 @@ import 'response_handler/response_handler.dart';
 
 class _RouterPlusHandler {
   final Function handler;
-  final Middleware? localMiddleware;
+  final List<Middleware> middlewares;
 
-  _RouterPlusHandler(this.handler, this.localMiddleware);
+  _RouterPlusHandler(this.handler, this.middlewares);
 
   /// Match the signature of any shelf_router handler.
   FutureOr<Response> call(
@@ -31,15 +31,18 @@ class _RouterPlusHandler {
     String? p15,
     String? p16,
   ]) async {
-    if (localMiddleware != null) {
-      /// Dynamically attach middleware to this request
-      return Pipeline()
-          .addMiddleware(localMiddleware!)
-          .addHandler(_handler)
-          .call(request);
-    }
+    if (middlewares.isNotEmpty) {
+      /// Attach middleware to this request
+      var pipeline = Pipeline();
 
-    return _handler.call(request);
+      for (final middleware in middlewares) {
+        pipeline = pipeline.addMiddleware(middleware);
+      }
+
+      return pipeline.addHandler(_handler).call(request);
+    } else {
+      return _handler.call(request);
+    }
   }
 
   Future<Response> _handler(Request request) async {
@@ -80,16 +83,22 @@ class RouterPlus {
       : shelfRouter = existingRouter ?? Router();
 
   /// Process incoming request
-  Future<Response> call(Request request) async {
-    var pipeline = Pipeline();
+  FutureOr<Response> call(Request request) {
+    if (!_routeAdded && _middlewareList.isNotEmpty) {
+      /// If no route has been added and middleware is present, just evaluate
+      /// the middleware.
+      var pipeline = Pipeline();
 
-    /// Apply all global middlewares
-    for (var middleware in _middlewareList) {
-      pipeline = pipeline.addMiddleware(middleware);
+      for (final middleware in _middlewareList) {
+        pipeline = pipeline.addMiddleware(middleware);
+      }
+
+      // If middleware doesn't return a response, it's a 404.
+      return pipeline.addHandler((_) => Response(404)).call(request);
     }
 
     /// Delegate to shelf_router
-    return pipeline.addHandler(shelfRouter).call(request);
+    return shelfRouter.call(request);
   }
 
   /// Add [handler] for [verb] requests to [route].
@@ -100,7 +109,13 @@ class RouterPlus {
   /// be registered before the `GET` handler.
   void add(String verb, String route, Function handler,
       [Middleware? localMiddleware]) {
-    shelfRouter.add(verb, route, _RouterPlusHandler(handler, localMiddleware));
+    shelfRouter.add(
+        verb,
+        route,
+        _RouterPlusHandler(handler, [
+          ..._middlewareList,
+          if (localMiddleware != null) localMiddleware,
+        ]));
     _routeAdded = true;
   }
 
@@ -108,7 +123,12 @@ class RouterPlus {
   ///
   /// Can obtain a [Middleware] via [use] for this route.
   void all(String route, Function handler, {Middleware? use}) {
-    shelfRouter.all(route, _RouterPlusHandler(handler, use));
+    shelfRouter.all(
+        route,
+        _RouterPlusHandler(handler, [
+          ..._middlewareList,
+          if (use != null) use,
+        ]));
     _routeAdded = true;
   }
 
