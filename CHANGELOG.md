@@ -1,3 +1,8 @@
+## 1.5.0
+
+- Changed way of applying global middleware. Middlewares are now scoped to routers that can be composed by using `mount()`.
+
+
 ## 1.4.1
 
 - Added `onStarted` to `shelfRun()` to specify alternative / custom startup logging.
