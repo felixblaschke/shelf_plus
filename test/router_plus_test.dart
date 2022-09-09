@@ -326,7 +326,7 @@ void main() {
     restrictedApp.get('/protected', () => 'protected data');
 
     var app = Router().plus;
-    
+
     app.mount('/', restrictedApp);
 
     app.get('/public', () {
