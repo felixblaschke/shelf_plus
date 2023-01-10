@@ -1,3 +1,7 @@
+## 1.5.1
+
+- Update dependencies
+
 ## 1.5.0
 
 - Changed way of applying global middleware. Middlewares are now scoped to routers that can be composed by using `mount()`.
