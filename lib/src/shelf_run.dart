@@ -50,13 +50,11 @@ Future<ShelfRunContext> shelfRun(
           onStarted: onStarted,
         );
         context._server = server;
-      }
-      on SocketException catch(e){
-        if(onStartFailed != null) {
+      } on SocketException catch (e) {
+        if (onStartFailed != null) {
           onStartFailed.call(e);
-        }
-        else{
-          print(e);
+        } else {
+          rethrow;
         }
       }
       return Future.value(context._server);
@@ -71,13 +69,11 @@ Future<ShelfRunContext> shelfRun(
         securityContext: securityContext,
         onStarted: onStarted,
       );
-    }
-    on SocketException catch(e){
-      if(onStartFailed != null) {
+    } on SocketException catch (e) {
+      if (onStartFailed != null) {
         onStartFailed.call(e);
-      }
-      else{
-        print(e);
+      } else {
+        rethrow;
       }
     }
   }

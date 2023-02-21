@@ -74,6 +74,45 @@ void main() {
     await ctx.close();
   });
 
+  test('shelf run - test onStartFailed behavior , hot reload off', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    String? failed;
+    var ctx = await shelfRun(
+      init,
+      defaultEnableHotReload: false,
+      defaultBindAddress: "10.10.10.10",
+      onStartFailed: (e) {
+        failed = "FAILED";
+      },
+    );
+
+    expect(failed, isNotNull);
+
+    await ctx.close();
+  });
+
+  test('shelf run - test onStartFailed behavior , hot reload on', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    String? failed;
+    var ctx = await shelfRun(
+      init,
+      defaultEnableHotReload: false,
+      defaultBindAddress: "10.10.10.10",
+      onStartFailed: (e) {
+        failed = "FAILED";
+      },
+    );
+
+    /// wait for server warm up when hot reload enabled.
+    await Future.delayed(Duration(seconds: 1));
+
+    expect(failed, isNotNull);
+
+    await ctx.close();
+  });
+
   test('shelf run - isolates / shared', () async {
     var ctxList = <ShelfRunContext>[];
 
