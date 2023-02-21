@@ -6,6 +6,7 @@ import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_hotreload/shelf_hotreload.dart';
 
 typedef OnStarted = void Function(Object address, int port);
+typedef OnStartFailed = void Function(SocketException e);
 
 /// Mechanism to quickly run a shelf app.
 ///
@@ -27,6 +28,7 @@ Future<ShelfRunContext> shelfRun(
   bool defaultShared = false,
   SecurityContext? securityContext,
   OnStarted? onStarted,
+  OnStartFailed? onStartFailed,
 }) async {
   var context = ShelfRunContext();
 
@@ -38,7 +40,30 @@ Future<ShelfRunContext> shelfRun(
 
   if (useHotReload) {
     withHotreload(() async {
-      final server = await _createServer(
+      try {
+        final server = await _createServer(
+          init,
+          defaultBindPort: defaultBindPort,
+          defaultBindAddress: defaultBindAddress,
+          defaultShared: defaultShared,
+          securityContext: securityContext,
+          onStarted: onStarted,
+        );
+        context._server = server;
+      }
+      on SocketException catch(e){
+        if(onStartFailed != null) {
+          onStartFailed.call(e);
+        }
+        else{
+          print(e);
+        }
+      }
+      return Future.value(context._server);
+    });
+  } else {
+    try {
+      await _createServer(
         init,
         defaultBindPort: defaultBindPort,
         defaultBindAddress: defaultBindAddress,
@@ -46,18 +71,15 @@ Future<ShelfRunContext> shelfRun(
         securityContext: securityContext,
         onStarted: onStarted,
       );
-      context._server = server;
-      return server;
-    });
-  } else {
-    await _createServer(
-      init,
-      defaultBindPort: defaultBindPort,
-      defaultBindAddress: defaultBindAddress,
-      defaultShared: defaultShared,
-      securityContext: securityContext,
-      onStarted: onStarted,
-    );
+    }
+    on SocketException catch(e){
+      if(onStartFailed != null) {
+        onStartFailed.call(e);
+      }
+      else{
+        print(e);
+      }
+    }
   }
 
   return context;
