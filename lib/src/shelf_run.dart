@@ -6,7 +6,9 @@ import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_hotreload/shelf_hotreload.dart';
 
 typedef OnStarted = void Function(Object address, int port);
-typedef OnStartFailed = void Function(SocketException e);
+
+/// The type [e] represents the error or exception that occurred.
+typedef OnStartFailed = void Function(Object e);
 
 /// Mechanism to quickly run a shelf app.
 ///
@@ -38,6 +40,8 @@ Future<ShelfRunContext> shelfRun(
     useHotReload = false;
   }
 
+  final catchDelegate = onStartFailed ?? (e) => throw e; // rethrow by default
+
   if (useHotReload) {
     withHotreload(() async {
       try {
@@ -50,12 +54,8 @@ Future<ShelfRunContext> shelfRun(
           onStarted: onStarted,
         );
         context._server = server;
-      } on SocketException catch (e) {
-        if (onStartFailed != null) {
-          onStartFailed.call(e);
-        } else {
-          rethrow;
-        }
+      } catch (e) {
+        catchDelegate(e);
       }
       return Future.value(context._server);
     });
@@ -69,12 +69,8 @@ Future<ShelfRunContext> shelfRun(
         securityContext: securityContext,
         onStarted: onStarted,
       );
-    } on SocketException catch (e) {
-      if (onStartFailed != null) {
-        onStartFailed.call(e);
-      } else {
-        rethrow;
-      }
+    } catch (e) {
+      catchDelegate(e);
     }
   }
 
