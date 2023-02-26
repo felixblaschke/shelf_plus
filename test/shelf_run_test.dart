@@ -105,12 +105,55 @@ void main() {
       },
     );
 
-    /// wait for server warm up when hot reload enabled.
-    await Future.delayed(Duration(seconds: 1));
-
     expect(failed, isNotNull);
 
     await ctx.close();
+  });
+
+  test('shelf run - test onWillClose behavior', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    String? flag;
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8081, onWillClose: () {
+      flag = "closing";
+    });
+
+    await ctx.close();
+
+    expect(flag, isNotNull);
+  });
+
+  test('shelf run - test onClosed behavior', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    String? flag;
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8082, onClosed: () {
+      flag = "closed";
+    });
+
+    await ctx.close();
+
+    expect(flag, isNotNull);
+  });
+
+  test('shelf run - test onWillClose and onClosed behavior', () async {
+    var init = () => (Request request) => Response.ok('ok');
+
+    String? closingFlag;
+    String? closedFlag;
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8083, onWillClose: () {
+      closingFlag = "closing";
+    }, onClosed: () {
+      closedFlag = "closed";
+    });
+
+    await ctx.close();
+
+    expect(closingFlag, isNotNull);
+    expect(closedFlag, isNotNull);
   });
 
   test('shelf run - isolates / shared', () async {
