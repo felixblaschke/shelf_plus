@@ -114,8 +114,8 @@ void main() {
     var init = () => (Request request) => Response.ok('ok');
 
     String? flag;
-    var ctx =
-        await shelfRun(init, defaultEnableHotReload: false, onWillClose: () {
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8081, onWillClose: () {
       flag = "closing";
     });
 
@@ -128,7 +128,8 @@ void main() {
     var init = () => (Request request) => Response.ok('ok');
 
     String? flag;
-    var ctx = await shelfRun(init, defaultEnableHotReload: false, onClosed: () {
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8082, onClosed: () {
       flag = "closed";
     });
 
@@ -142,8 +143,8 @@ void main() {
 
     String? closingFlag;
     String? closedFlag;
-    var ctx =
-        await shelfRun(init, defaultEnableHotReload: false, onWillClose: () {
+    var ctx = await shelfRun(init,
+        defaultEnableHotReload: false, defaultBindPort: 8083, onWillClose: () {
       closingFlag = "closing";
     }, onClosed: () {
       closedFlag = "closed";
