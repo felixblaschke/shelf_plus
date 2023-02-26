@@ -1,3 +1,8 @@
+## 1.7.0
+
+- Added `onWillClose` to `shelfRun()` lifecycle hook.
+- Added `onClosed` to `shelfRun()` lifecycle hook.
+
 ## 1.6.0
 
 - Added `onStartFailed` to `shelfRun()` to react on server startup failures.
