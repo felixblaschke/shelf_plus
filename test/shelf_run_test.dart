@@ -114,13 +114,10 @@ void main() {
     var init = () => (Request request) => Response.ok('ok');
 
     String? flag;
-    var ctx = await shelfRun(
-      init,
-      defaultEnableHotReload: false,
-      onWillClose: () {
-        flag = "closing";
-      }
-    );
+    var ctx =
+        await shelfRun(init, defaultEnableHotReload: false, onWillClose: () {
+      flag = "closing";
+    });
 
     await ctx.close();
 
@@ -131,13 +128,9 @@ void main() {
     var init = () => (Request request) => Response.ok('ok');
 
     String? flag;
-    var ctx = await shelfRun(
-      init,
-      defaultEnableHotReload: false,
-      onClosed: () {
-        flag = "closed";
-      }
-    );
+    var ctx = await shelfRun(init, defaultEnableHotReload: false, onClosed: () {
+      flag = "closed";
+    });
 
     await ctx.close();
 
@@ -149,16 +142,12 @@ void main() {
 
     String? closingFlag;
     String? closedFlag;
-    var ctx = await shelfRun(
-      init,
-      defaultEnableHotReload: false,
-      onWillClose: () {
-        closingFlag = "closing";
-      },
-      onClosed: () {
-        closedFlag = "closed";
-      }
-    );
+    var ctx =
+        await shelfRun(init, defaultEnableHotReload: false, onWillClose: () {
+      closingFlag = "closing";
+    }, onClosed: () {
+      closedFlag = "closed";
+    });
 
     await ctx.close();
 
