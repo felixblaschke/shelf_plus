@@ -10,6 +10,9 @@ typedef OnStarted = void Function(Object address, int port);
 /// The type [e] represents the error or exception that occurred.
 typedef OnStartFailed = void Function(Object e);
 
+typedef OnWillClose = void Function();
+typedef OnClosed = void Function();
+
 /// Mechanism to quickly run a shelf app.
 ///
 /// Requires an [init] function, that provides a shelf [Handler].
@@ -31,8 +34,13 @@ Future<ShelfRunContext> shelfRun(
   SecurityContext? securityContext,
   OnStarted? onStarted,
   OnStartFailed? onStartFailed,
+  OnWillClose? onWillClose,
+  OnClosed? onClosed,
 }) async {
-  var context = ShelfRunContext();
+  var context = ShelfRunContext(
+    onWillClose: onWillClose,
+    onClosed: onClosed,
+  );
 
   var useHotReload = defaultEnableHotReload;
 
@@ -108,13 +116,17 @@ String? _env(String key) =>
 
 class ShelfRunContext {
   HttpServer? _server;
+  OnWillClose? onWillClose;
+  OnClosed? onClosed;
 
   /// Stops the shelfRun
   Future<void> close() async {
+    onWillClose?.call();
     await _server?.close();
+    onClosed?.call();
   }
 
-  ShelfRunContext();
+  ShelfRunContext({this.onWillClose, this.onClosed});
 }
 
 extension on String {
