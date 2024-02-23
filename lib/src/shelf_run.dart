@@ -10,8 +10,8 @@ typedef OnStarted = void Function(Object address, int port);
 /// The type [e] represents the error or exception that occurred.
 typedef OnStartFailed = void Function(Object e);
 
-typedef OnWillClose = void Function();
-typedef OnClosed = void Function();
+typedef OnWillClose = FutureOr<void> Function();
+typedef OnClosed = FutureOr<void> Function();
 
 /// Mechanism to quickly run a shelf app.
 ///
@@ -69,7 +69,7 @@ Future<ShelfRunContext> shelfRun(
     });
   } else {
     try {
-      await _createServer(
+      final server = await _createServer(
         init,
         defaultBindPort: defaultBindPort,
         defaultBindAddress: defaultBindAddress,
@@ -77,6 +77,7 @@ Future<ShelfRunContext> shelfRun(
         securityContext: securityContext,
         onStarted: onStarted,
       );
+      context._server = server;
     } catch (e) {
       catchDelegate(e);
     }
@@ -121,9 +122,9 @@ class ShelfRunContext {
 
   /// Stops the shelfRun
   Future<void> close() async {
-    onWillClose?.call();
-    await _server?.close();
-    onClosed?.call();
+    await onWillClose?.call();
+    await _server?.close(force: true);
+    await onClosed?.call();
   }
 
   ShelfRunContext({this.onWillClose, this.onClosed});

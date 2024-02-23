@@ -180,6 +180,26 @@ void main() {
       await ctx.close();
     }
   });
+
+  test('Server stops when hotreload is disabled', () async {
+    init() => (Request request) => Response.ok('ok');
+
+    var context1 = await shelfRun(
+      init,
+      defaultBindAddress: '0.0.0.0',
+      defaultBindPort: 8085,
+      defaultEnableHotReload: false,
+    );
+    await context1.close();
+
+    var context2 = await shelfRun(
+      init,
+      defaultBindAddress: '0.0.0.0',
+      defaultBindPort: 8085,
+      defaultEnableHotReload: false,
+    );
+    await context2.close();
+  });
 }
 
 Handler isolateInit() =>

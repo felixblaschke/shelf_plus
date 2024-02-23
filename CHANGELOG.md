@@ -1,3 +1,8 @@
+## 1.8.0
+
+- `shelfRun()` lifecycle hooks `onWillClose` and `onClosed` supports asynchronous execution
+- Fixed: server does not stop, when hotreload is set to false
+
 ## 1.7.0
 
 - Added `onWillClose` to `shelfRun()` lifecycle hook.
