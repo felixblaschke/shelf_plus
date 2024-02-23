@@ -24,5 +24,5 @@ Handler init() {
 
   app.get('/person', () => Person(name: 'John', age: 42));
   // #end
-  return app;
+  return app.call;
 }

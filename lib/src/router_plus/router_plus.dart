@@ -51,7 +51,7 @@ class _RouterPlusHandler {
     dynamic result;
 
     try {
-      result = Function.apply(handler, [request, ...map.values.toList()]);
+      result = Function.apply(handler, [request, ...map.values]);
     } on NoSuchMethodError catch (_) {
       try {
         result = handler();
@@ -115,7 +115,7 @@ class RouterPlus {
         _RouterPlusHandler(handler, [
           ..._middlewareList,
           if (localMiddleware != null) localMiddleware,
-        ]));
+        ]).call);
     _routeAdded = true;
   }
 
@@ -128,7 +128,7 @@ class RouterPlus {
         _RouterPlusHandler(handler, [
           ..._middlewareList,
           if (use != null) use,
-        ]));
+        ]).call);
     _routeAdded = true;
   }
 

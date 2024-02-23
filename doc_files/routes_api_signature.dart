@@ -16,5 +16,5 @@ Handler init() {
     return 'response: ${request.routeParameter('id')}';
   });
   // #end
-  return app;
+  return app.call;
 }

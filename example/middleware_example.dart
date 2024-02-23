@@ -15,5 +15,5 @@ Handler init() {
 
   app.get('/', () => 'world', use: greeterMiddleware);
 
-  return app;
+  return app.call;
 }

@@ -1,3 +1,7 @@
+## 1.9.0
+
+- Upgrade dependencies
+
 ## 1.8.0
 
 - `shelfRun()` lifecycle hooks `onWillClose` and `onClosed` supports asynchronous execution

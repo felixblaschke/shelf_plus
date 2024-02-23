@@ -6,5 +6,5 @@ Handler init() {
   // #begin
   var app = Router().plus;
   // #end
-  return app;
+  return app.call;
 }

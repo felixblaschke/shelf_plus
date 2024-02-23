@@ -7,5 +7,5 @@ Handler init() {
   // #begin
   app.get('/', () => '<h1>Hi!</h1>', use: typeByExtension('html'));
   // #end
-  return app;
+  return app.call;
 }

@@ -9,5 +9,5 @@ Handler init() {
 
   app.get('/two', () => '2', use: setContentType('application/json'));
   // #end
-  return app;
+  return app.call;
 }

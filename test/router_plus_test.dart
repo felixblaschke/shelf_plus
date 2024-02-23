@@ -25,7 +25,7 @@ void main() {
     app.add('get', '/add-get', () => 'add-get');
     app.all('/all', () => 'all');
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     expect(await server.fetchBody<String>('get', '/get'), 'get');
     expect(await server.fetchBody<String>('head', '/head'), '');
@@ -49,7 +49,7 @@ void main() {
     app.get('/b2/<name>', (Request request) => 'b');
     app.get('/b3/<name>', (Request request, String name) => 'b:$name');
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     expect(await server.fetchBody<String>('get', '/a1'), 'a');
     expect(await server.fetchBody<String>('get', '/a2'), 'a');
@@ -73,7 +73,7 @@ void main() {
     app.get('/persons', () => persons);
     app.get('/persons/john', () => persons.where((p) => p.firstName == 'John'));
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r1 = await server.fetch('get', '/object');
     expect(r1.headers['content-type']?.first, 'application/json');
@@ -109,7 +109,7 @@ void main() {
 
     server = await runTestServer(Pipeline()
         .addMiddleware(addResponseHandler([catHandler]))
-        .addHandler(app));
+        .addHandler(app.call));
 
     expect(await server.fetchBody<String>('get', '/cat'), 'Purrr!');
   });
@@ -119,7 +119,7 @@ void main() {
 
     app.get('/cat', () => Cat(), use: catHandler.middleware);
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
     expect(await server.fetchBody<String>('get', '/cat'), 'Purrr!');
   });
 
@@ -130,7 +130,7 @@ void main() {
 
     app.get('/number', () => '1', use: wrapBody('b') + wrapBody('c'));
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     expect(await server.fetchBody<String>('get', '/number'), 'a(b(c(1)))');
   });
@@ -143,7 +143,7 @@ void main() {
 
     app.use(returnHello());
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     expect(await server.fetchBody<String>('get', '/'), 'hello');
     expect(await server.fetchBody<String>('post', '/dynamic_route'), 'hello');
@@ -156,7 +156,7 @@ void main() {
 
     app.get('/person', () => Person(firstName: 'John', lastName: 'Doe'));
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r1 = await server.fetch('get', '/person');
     expect(r1.headers['content-type']?.first, 'application/json');
@@ -172,7 +172,7 @@ void main() {
       return File('test/test_data/$path');
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r1 = await server.fetch('get', '/bird');
     expect(r1.headers[HttpHeaders.contentTypeHeader]?.first, 'image/jpeg');
@@ -193,7 +193,7 @@ void main() {
     app.get('/image', () => File('test/test_data/bird.jpg'),
         use: download(filename: 'bird.jpg'));
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r = await server.fetch('get', '/image');
     expect(r.headers['content-disposition']?.first,
@@ -205,7 +205,7 @@ void main() {
 
     app.get('/data', () => wrapBody('a') >> 'b');
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r = await server.fetch('get', '/data');
     expect(r.data, 'a(b)');
@@ -219,7 +219,7 @@ void main() {
 
     app.get('/html2', () => '<h1>Headline</h1>', use: typeByExtension('html'));
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r1 = await server.fetch('get', '/html1');
     expect(r1.headers[HttpHeaders.contentTypeHeader]?.first, 'text/html');
@@ -235,7 +235,7 @@ void main() {
     app1.get('/a', () => Response.notFound(''));
     app2.get('/a', () => 'ok');
 
-    server = await runTestServer(cascade([app1, app2]));
+    server = await runTestServer(cascade([app1.call, app2.call]));
 
     var r = await server.fetch('get', '/a');
     expect(r.data, 'ok');
@@ -248,7 +248,7 @@ void main() {
       return 'Hi ${request.routeParameter('name')}, I like ${request.routeParameter('action')}';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r = await server.fetch('get', '/sports/john');
     expect(r.data, 'Hi john, I like sports');
@@ -258,10 +258,10 @@ void main() {
     var app = Router().plus;
     var subapp = Router().plus;
 
-    app.mount('/prefix/', subapp);
+    app.mount('/prefix/', subapp.call);
     subapp.get('/data', () => 'ok');
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r = await server.fetch('get', '/prefix/data');
     expect(r.data, 'ok');
@@ -273,7 +273,7 @@ void main() {
     app.get('/bird1', () => File('test/test_data/bird.jpg').readAsBytesSync());
     app.get('/bird2', () => File('test/test_data/bird.jpg').openRead());
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r1 = await server.fetch('get', '/bird1');
     expect(r1.headers[HttpHeaders.contentTypeHeader]?.first,
@@ -298,7 +298,7 @@ void main() {
           });
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     final channel = WebSocketChannel.connect(
       Uri.parse('${server.websocketHost}/ws'),
@@ -327,13 +327,13 @@ void main() {
 
     var app = Router().plus;
 
-    app.mount('/', restrictedApp);
+    app.mount('/', restrictedApp.call);
 
     app.get('/public', () {
       return 'public data';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     var r = await server.fetch('get', '/public');
     expect(r.data, 'public data');

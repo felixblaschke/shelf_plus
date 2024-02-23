@@ -7,5 +7,5 @@ Handler init() {
   // #begin
   app.get('/path/to/match', () => 'a response');
   // #end
-  return app;
+  return app.call;
 }

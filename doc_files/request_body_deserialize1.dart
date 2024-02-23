@@ -14,5 +14,5 @@ Handler init() {
     return 'You send me: ${person.name}';
   });
 
-  return app;
+  return app.call;
 }

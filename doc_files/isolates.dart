@@ -20,5 +20,5 @@ Handler init() {
     return 'Hello from isolate: ${Isolate.current.debugName}';
   });
 
-  return app;
+  return app.call;
 }

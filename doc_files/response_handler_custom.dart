@@ -16,7 +16,7 @@ Handler init() {
 
   app.get('/cat', () => Cat());
   // #end
-  return app;
+  return app.call;
 }
 
 class Cat {

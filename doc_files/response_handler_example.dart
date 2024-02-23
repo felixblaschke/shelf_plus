@@ -31,7 +31,7 @@ Handler init() {
             onClose: (ws) => ws.send('Bye!'),
           ));
 
-  return app;
+  return app.call;
 }
 
 class Person {

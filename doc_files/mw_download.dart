@@ -16,5 +16,5 @@ Handler init() {
     return download(filename: 'invoice_$id.pdf') >> document;
   });
   // #end
-  return app;
+  return app.call;
 }

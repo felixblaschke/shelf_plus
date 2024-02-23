@@ -18,7 +18,7 @@ void main() {
       return 'ok';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     await dio.Dio().post('${server.host}/route', data: 'hello');
 
@@ -37,7 +37,7 @@ void main() {
       return 'ok';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     await dio.Dio().post('${server.host}/route', data: 'hello');
 
@@ -53,7 +53,7 @@ void main() {
       return 'ok';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     await dio.Dio().post('${server.host}/route', data: {'a': '1', 'b': 2});
 
@@ -70,7 +70,7 @@ void main() {
       return 'ok';
     });
 
-    server = await runTestServer(app);
+    server = await runTestServer(app.call);
 
     await dio.Dio().post('${server.host}/route',
         data: Person(name: 'john', age: 42).toJson());

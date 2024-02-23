@@ -19,7 +19,7 @@ Handler init() {
 
   app.get('/file', () => File('thesis.pdf'));
 
-  return app;
+  return app.call;
 }
 
 class Person {

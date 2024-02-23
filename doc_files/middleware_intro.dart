@@ -18,5 +18,5 @@ Handler init() {
   // combine middleware with + operator
   app.get('/request2', () => 'response', use: middlewareB + middlewareC);
   // #end
-  return app;
+  return app.call;
 }

@@ -7,5 +7,5 @@ Handler init() {
 
   app.get('/', () => 'Hello World!');
 
-  return app;
+  return app.call;
 }

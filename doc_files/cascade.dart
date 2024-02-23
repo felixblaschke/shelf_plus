@@ -10,5 +10,5 @@ Handler init() {
 
   app2.get('/maybe', () => 'got it!');
 
-  return cascade([app1, app2]);
+  return cascade([app1.call, app2.call]);
 }

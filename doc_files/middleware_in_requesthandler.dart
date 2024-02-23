@@ -12,5 +12,5 @@ Handler init() {
     return middleware(value) >> 'response';
   });
   // #end
-  return app;
+  return app.call;
 }
