@@ -1,3 +1,7 @@
+## 1.9.1
+
+- Fixed CORS example (thanks to [kliuchev](https://github.com/kliuchev))
+
 ## 1.9.0
 
 - Upgrade dependencies

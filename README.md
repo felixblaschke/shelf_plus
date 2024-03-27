@@ -550,13 +550,11 @@ import 'package:shelf_plus/shelf_plus.dart';
 void main() => shelfRun(init);
 
 Handler init() {
-  var app = Router().plus;
+  final router = Router().plus;
 
-  app.use(corsHeaders()); // use CORS middleware
+  router.get('/', () => {'data': 'This API is CORS enabled.'});
 
-  app.get('/', () => {'data': 'This API is CORS enabled.'});
-
-  return app;
+  return corsHeaders() >> router;
 }
 ```
 <!-- // end of #code -->
