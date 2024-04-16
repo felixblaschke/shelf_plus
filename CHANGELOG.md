@@ -1,3 +1,7 @@
+## 1.9.2
+
+- Use thread-safe `print` on startup (thanks to [0rzech](https://github.com/0rzech))
+
 ## 1.9.1
 
 - Fixed CORS example (thanks to [kliuchev](https://github.com/kliuchev))
