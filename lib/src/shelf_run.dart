@@ -103,7 +103,7 @@ Future<HttpServer> _createServer(
   final server = await io.serve(handler, address, port,
       shared: shared, securityContext: securityContext);
   if (onStarted == null) {
-    stdout.writeln('shelfRun HTTP service running on port ${server.port}');
+    print('shelfRun HTTP service running on port ${server.port}');
   } else {
     onStarted(address, port);
   }
