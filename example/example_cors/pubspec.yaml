@@ -2,7 +2,7 @@ name: example_cors
 description: Shelf Plus Example
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.5.4 <4.0.0"
 
 dependencies:
   shelf_cors_headers: ^0.1.2
@@ -10,4 +10,4 @@ dependencies:
     path: ../../
 
 dev_dependencies:
-  lints: ^1.0.0
+  lints: ^5.0.0

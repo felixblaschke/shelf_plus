@@ -8,5 +8,5 @@ Handler init() {
 
   router.get('/', () => {'data': 'This API is CORS enabled.'});
 
-  return corsHeaders() >> router;
+  return corsHeaders() >> router.call;
 }

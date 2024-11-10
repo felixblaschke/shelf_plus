@@ -46,5 +46,5 @@ Handler init() {
     return {'ok': 'true'};
   });
 
-  return app;
+  return app.call;
 }

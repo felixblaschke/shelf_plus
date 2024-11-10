@@ -1,3 +1,8 @@
+## 1.10.0
+
+- Upgraded dependencies (thanks to [pulyaevskiy](https://github.com/pulyaevskiy))
+- Update code in examples
+
 ## 1.9.2
 
 - Use thread-safe `print` on startup (thanks to [0rzech](https://github.com/0rzech))

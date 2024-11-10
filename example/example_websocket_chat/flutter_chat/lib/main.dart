@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key}) : super(key: key);
+  const ChatPage({super.key});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -93,11 +93,11 @@ class _ChatPageState extends State<ChatPage> {
 
 class ChatMessageSubmitForm extends StatelessWidget {
   const ChatMessageSubmitForm({
-    Key? key,
+    super.key,
     required this.messageFocus,
     required this.messageController,
     required this.send,
-  }) : super(key: key);
+  });
 
   final FocusNode messageFocus;
   final TextEditingController messageController;
@@ -131,12 +131,11 @@ class ChatMessageSubmitForm extends StatelessWidget {
 /// Scrollable view that list all messages as bubbles
 class ChatBubblesScrollView extends StatelessWidget {
   const ChatBubblesScrollView({
-    Key? key,
+    super.key,
     required ScrollController scrollController,
     required List<String> messages,
   })  : _scrollController = scrollController,
-        _messages = messages,
-        super(key: key);
+        _messages = messages;
 
   final ScrollController _scrollController;
   final List<String> _messages;
@@ -153,7 +152,7 @@ class ChatBubblesScrollView extends StatelessWidget {
 
 /// Container that displays the message text
 class Bubble extends StatelessWidget {
-  const Bubble(this.message, {Key? key}) : super(key: key);
+  const Bubble(this.message, {super.key});
   final String message;
 
   @override

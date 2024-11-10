@@ -554,7 +554,7 @@ Handler init() {
 
   router.get('/', () => {'data': 'This API is CORS enabled.'});
 
-  return corsHeaders() >> router;
+  return corsHeaders() >> router.call;
 }
 ```
 <!-- // end of #code -->
@@ -615,7 +615,7 @@ Handler init() {
     return {'ok': 'true'};
   });
 
-  return app;
+  return app.call;
 }
 ```
 <!-- // end of #code -->
@@ -704,7 +704,7 @@ Handler init() {
     ),
   );
 
-  return app;
+  return app.call;
 }
 ```
 <!-- // end of #code -->

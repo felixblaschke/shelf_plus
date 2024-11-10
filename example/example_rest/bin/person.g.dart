@@ -10,7 +10,7 @@ Person _$PersonFromJson(Map<String, dynamic> json) => Person(
       id: json['id'] as String?,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      age: json['age'] as int,
+      age: (json['age'] as num).toInt(),
     );
 
 Map<String, dynamic> _$PersonToJson(Person instance) => <String, dynamic>{

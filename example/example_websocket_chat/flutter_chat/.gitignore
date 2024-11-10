@@ -6,6 +6,7 @@ macos/
 web/
 windows/
 test/
+linux/
 
 # Miscellaneous
 *.class

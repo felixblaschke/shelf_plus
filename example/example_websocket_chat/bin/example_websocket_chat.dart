@@ -40,5 +40,5 @@ Handler init() {
     ),
   );
 
-  return app;
+  return app.call;
 }
