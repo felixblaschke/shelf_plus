@@ -1,7 +1,3 @@
-/// Shelf Plus is a quality of life addon for your server-side
-/// development within the Shelf platform.
-library shelf_plus;
-
 export 'package:shelf/shelf.dart';
 export 'package:shelf_router/shelf_router.dart';
 export 'package:shelf_static/shelf_static.dart';

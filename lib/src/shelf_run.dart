@@ -105,8 +105,7 @@ Future<HttpServer> _createServer(
   if (onStarted == null) {
     print('shelfRun HTTP service running on port ${server.port}');
   } else {
-    port = server.port;
-    onStarted(address, port);
+    onStarted(address, server.port);
   }
   return server;
 }

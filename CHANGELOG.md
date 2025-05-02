@@ -1,3 +1,8 @@
+## 1.10.1
+
+- Expose correct port in `onStarted()` if server is launched with random port (thanks to [rodolfogoulart](https://github.com/rodolfogoulart))
+- Remove library name (following lint `unnecessary_library_name`)
+
 ## 1.10.0
 
 - Upgraded dependencies (thanks to [pulyaevskiy](https://github.com/pulyaevskiy))
