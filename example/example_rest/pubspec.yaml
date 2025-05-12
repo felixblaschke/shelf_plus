@@ -2,7 +2,7 @@ name: example_rest
 description: Shelf Plus Example
 
 environment:
-  sdk: ">=3.5.4 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   shelf_plus:
