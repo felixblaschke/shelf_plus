@@ -1,3 +1,10 @@
+## 1.11.0
+
+- Upgraded `shelf_web_socket` dependency from ^2.0.0 to ^3.0.0 (thanks to [busslina](https://github.com/busslina))
+- Added WebSocket subprotocol negotiation support
+  - `WebSocketSession` now accepts optional `protocols` parameter to specify supported subprotocols
+  - `WebSocketSession.subprotocol` property contains the negotiated subprotocol (or `null` if none)
+
 ## 1.10.1
 
 - Expose correct port in `onStarted()` if server is launched with random port (thanks to [rodolfogoulart](https://github.com/rodolfogoulart))

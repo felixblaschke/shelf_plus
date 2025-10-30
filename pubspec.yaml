@@ -1,6 +1,6 @@
 name: shelf_plus
 description: Shelf Plus is a quality of life addon for your server-side development within the Shelf platform.
-version: 1.10.1
+version: 1.11.0
 repository: https://github.com/felixblaschke/shelf_plus
 
 environment:
