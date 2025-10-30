@@ -221,6 +221,26 @@ class Person {
 ```
 <!-- // end of #code -->
 
+**WebSocket Subprotocol Support:**
+
+The `WebSocketSession` also provides access to the optional `subprotocol` property, which contains the subprotocol negotiated between client and server (if any):
+
+<!-- #code doc_files/web_socket_subprotocol.dart -->
+```dart
+app.get(
+  '/ws',
+  () => WebSocketSession(
+    protocols: ['chat', 'superchat'],
+    onOpen: (ws) {
+      if (ws.subprotocol != null) {
+        print('Negotiated subprotocol: ${ws.subprotocol}');
+      }
+    },
+  ),
+);
+```
+<!-- // end of #code -->
+
 #### Custom ResponseHandler
 
 You can add your own ResponseHandler by using a [Shelf Middleware](https://pub.dev/documentation/shelf/latest/shelf/Middleware.html)

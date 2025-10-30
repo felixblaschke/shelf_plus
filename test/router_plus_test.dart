@@ -316,6 +316,46 @@ void main() {
     expect(receivedData, ['open', 'message: websocket']);
   });
 
+  test('websocket subprotocol negotiation', () async {
+    var app = Router().plus;
+
+    String? capturedSubprotocol;
+
+    app.get('/ws', () {
+      return WebSocketSession(
+        protocols: ['chat', 'superchat'],
+        onOpen: (session) {
+          capturedSubprotocol = session.subprotocol;
+          session.send('subprotocol: ${session.subprotocol ?? "none"}');
+          session.close();
+        },
+      );
+    });
+
+    server = await runTestServer(app.call);
+
+    // Test with subprotocol - client offers protocols that match
+    final channel1 = WebSocketChannel.connect(
+      Uri.parse('${server.websocketHost}/ws'),
+      protocols: ['chat', 'superchat'],
+    );
+
+    var message1 = await channel1.stream.first;
+    expect(message1, 'subprotocol: chat'); // First matching protocol is selected
+    expect(capturedSubprotocol, 'chat');
+
+    // Test with different client protocol order
+    capturedSubprotocol = null;
+    final channel2 = WebSocketChannel.connect(
+      Uri.parse('${server.websocketHost}/ws'),
+      protocols: ['other', 'superchat', 'chat'],
+    );
+
+    var message2 = await channel2.stream.first;
+    expect(message2, 'subprotocol: superchat'); // First match from client's list
+    expect(capturedSubprotocol, 'superchat');
+  });
+
   test('middlewares scoped to router', () async {
     var restrictedApp = Router().plus;
     restrictedApp.use(
