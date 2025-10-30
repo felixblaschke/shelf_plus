@@ -11,7 +11,7 @@ dependencies:
   shelf_router: ^1.1.4
   shelf_static: ^1.1.2
   shelf_hotreload: ^1.5.0
-  shelf_web_socket: ^2.0.0
+  shelf_web_socket: ^3.0.0
   mime_type: ^1.0.0
   web_socket_channel: ^3.0.1
 
