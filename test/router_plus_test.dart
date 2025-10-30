@@ -341,7 +341,8 @@ void main() {
     );
 
     var message1 = await channel1.stream.first;
-    expect(message1, 'subprotocol: chat'); // First matching protocol is selected
+    expect(
+        message1, 'subprotocol: chat'); // First matching protocol is selected
     expect(capturedSubprotocol, 'chat');
 
     // Test with different client protocol order
@@ -352,7 +353,8 @@ void main() {
     );
 
     var message2 = await channel2.stream.first;
-    expect(message2, 'subprotocol: superchat'); // First match from client's list
+    expect(
+        message2, 'subprotocol: superchat'); // First match from client's list
     expect(capturedSubprotocol, 'superchat');
   });
 

@@ -182,3 +182,4 @@ This allows users to omit parameters they don't need.
 - **WebSocketSession subprotocol**: The `subprotocol` property is available on WebSocketSession for protocol negotiation
 - **ResponseHandler ordering**: Custom handlers registered via middleware are evaluated AFTER built-in handlers
 - **File serving**: Uses shelf_static internally, so File responses respect that package's behavior
+- we need to always run dart format after each code change
